@@ -1,6 +1,490 @@
+---
+description: Permanent Cursor operating rules for the FinanceOS repository.
+alwaysApply: true
+---
+
 # FinanceOS Cursor Rulebook
 
-Status: Draft
+Version: 1.0
+Status: **Frozen**
+Applies To: Entire FinanceOS Repository
 
-This file will contain permanent implementation rules for Cursor.
-Do not add any rules yet.
+---
+
+## Purpose
+
+This document defines the permanent operating rules that Cursor must follow when working inside the FinanceOS repository.
+
+FinanceOS is an engineering-first product with a frozen architecture. Cursor is responsible for implementation, automation, refactoring, validation, documentation formatting, and Excel engineering, but **must not make product or architecture decisions independently**.
+
+This rulebook is always active for every FinanceOS conversation and repository action.
+
+---
+
+## Status
+
+This rulebook is **Frozen**.
+
+Cursor must treat every rule in this document as a permanent repository-wide operating rule unless the user explicitly edits this file.
+
+---
+
+## Operating Principles
+
+### Rule 1 — Documentation is the Source of Truth
+
+The `docs/` directory is the authoritative specification for FinanceOS.
+
+Cursor must always consult the documentation before implementing, modifying, or deleting workbook content.
+
+If documentation and workbook differ, **documentation wins** unless the user explicitly updates the documentation first.
+
+---
+
+### Rule 2 — ChatGPT Defines Architecture, Cursor Implements It
+
+Architecture decisions are created and finalized by the project architect (ChatGPT + User).
+
+Cursor implements those decisions faithfully.
+
+Cursor must never invent architecture, workflows, business entities, worksheet responsibilities, financial models, or product philosophy.
+
+---
+
+### Rule 3 — Never Assume Missing Information
+
+If information required for implementation is missing or ambiguous:
+
+- Stop.
+- Explain what is missing.
+- Ask the user for clarification.
+- Wait for approval.
+
+Never guess.
+
+---
+
+## Documentation-First Development
+
+Every major implementation follows this order:
+
+1. Documentation exists.
+2. Documentation is reviewed and frozen.
+3. Workbook implementation begins.
+4. Validation is performed.
+5. Git commit is created.
+
+Cursor must not skip documentation.
+
+---
+
+## Repository Boundaries
+
+### Documentation Files (`docs/`)
+
+Cursor **may**:
+
+- Create markdown formatting.
+- Update implementation status when instructed.
+- Add internal links between existing documents.
+- Correct formatting inconsistencies.
+
+Cursor **must not**:
+
+- Rewrite architecture.
+- Change business rules.
+- Change frozen decisions.
+- Reorder documentation structure without approval.
+
+---
+
+### Workbook Files (`workbook/`)
+
+Cursor **may**:
+
+- Create worksheets.
+- Create Excel Tables.
+- Create Named Ranges.
+- Create formulas.
+- Add validation lists.
+- Add formatting.
+- Add worksheet protection.
+
+Cursor **must not**:
+
+- Rename worksheets.
+- Delete worksheets.
+- Remove tables.
+- Change IDs.
+- Change entity structure.
+- Change worksheet responsibilities.
+
+Without explicit approval.
+
+---
+
+### Design Files (`design/`)
+
+Cursor may create or update design documentation, wireframes, color systems, typography references, and UX specifications only when documentation instructs it.
+
+Cursor must not invent new design systems without approval.
+
+---
+
+### Asset Files (`assets/`)
+
+Cursor may organize icons, logos, images, and design assets.
+
+Never delete assets automatically.
+
+---
+
+### Scripts (`scripts/`)
+
+Scripts exist only for engineering automation.
+
+Cursor must not create scripts that modify workbook architecture or financial logic automatically unless explicitly instructed.
+
+---
+
+## Allowed Work
+
+Cursor is allowed to perform these actions without asking:
+
+- Create folders and files following repository structure.
+- Format markdown documents.
+- Improve markdown readability.
+- Fix spelling and grammar.
+- Generate tables from existing specifications.
+- Refactor repetitive formulas without changing behavior.
+- Create helper formulas from documented logic.
+- Create documentation links.
+- Generate workbook formatting.
+- Add conditional formatting.
+- Create named ranges from documented specifications.
+- Organize repository files without changing architecture.
+
+---
+
+## Disallowed Work
+
+Cursor must **not** perform these actions without explicit approval.
+
+### Architecture Changes
+
+- Adding new entities.
+- Removing entities.
+- Changing AD documents.
+- Changing engineering standards.
+- Changing module responsibilities.
+- Changing workbook architecture.
+
+### Workbook Structure
+
+- Adding worksheets.
+- Removing worksheets.
+- Renaming worksheets.
+- Splitting worksheets.
+- Merging worksheets.
+- Changing worksheet purpose.
+
+### Business Logic
+
+- Financial calculations.
+- Forecast logic.
+- Goal calculations.
+- Liability calculations.
+- Dashboard metrics.
+- Transaction behavior.
+
+### Formula Behavior
+
+- Replacing formulas.
+- Changing formula outputs.
+- Changing lookup behavior.
+- Changing validation behavior.
+
+### Compatibility
+
+- Using Excel features that reduce compatibility.
+- Adding VBA.
+- Office Scripts.
+- Power Query.
+- External plugins.
+- Desktop-only functionality.
+
+Implementation must stop until approval is received.
+
+---
+
+## Documentation Files
+
+Documentation is immutable after it is frozen.
+
+Cursor must preserve:
+
+- Section order.
+- Naming.
+- IDs.
+- References.
+- Cross-links.
+
+Only formatting changes are allowed without approval.
+
+---
+
+## Workbook Files
+
+Cursor must preserve:
+
+- Worksheet names.
+- Table names.
+- Named ranges.
+- Stable IDs.
+- Worksheet responsibilities.
+- Lookup table ownership.
+- Validation integrity.
+- Sheet protection.
+
+Never generate duplicate IDs.
+
+Never reorder ID columns.
+
+---
+
+## Excel Compatibility Rules
+
+FinanceOS Version 1 is built entirely inside Microsoft Excel.
+
+Cursor must ensure compatibility with:
+
+- Excel Desktop (Windows)
+- Excel Desktop (Mac)
+- Excel Web
+- Excel Android
+- Excel iPhone / iPad
+
+### Forbidden Features
+
+Never use:
+
+- VBA
+- Office Scripts
+- Power Query
+- Power Pivot
+- Macros
+- COM Add-ins
+- External APIs
+- Desktop-only functions
+
+Unless explicitly approved for a future version.
+
+### Preferred Excel Features
+
+Use:
+
+- Excel Tables
+- Named Ranges
+- Data Validation
+- Conditional Formatting
+- Structured Table References
+- XLOOKUP
+- LET
+- IFERROR
+- FILTER (only where mobile compatible)
+- Dynamic Arrays only when compatibility is confirmed.
+
+---
+
+## FinanceOS UX Rules
+
+FinanceOS should feel like an application.
+
+### Design Principles
+
+- Clean.
+- Minimal.
+- Guided.
+- Mobile-friendly.
+- Touch-friendly.
+- No spreadsheet appearance where avoidable.
+
+### UI Rules
+
+Prefer:
+
+- Cards.
+- Sections.
+- Icons.
+- Progress indicators.
+- Status badges.
+- Clear spacing.
+- Consistent typography.
+
+Avoid clutter.
+
+---
+
+## Engineering Standards
+
+Cursor must preserve:
+
+- Stable IDs.
+- Table names.
+- Column ordering.
+- Required vs Optional fields.
+- Source-of-truth ownership.
+- Lookup table integrity.
+- Validation integrity.
+- Sheet protection rules.
+
+Never generate duplicate IDs.
+
+Never reorder ID columns.
+
+Never change engineering standards unless documentation changes first.
+
+---
+
+## Naming Convention Rules
+
+Never rename existing:
+
+- Tables.
+- Worksheets.
+- Named Ranges.
+- IDs.
+- Lookup Codes.
+
+Unless documentation changes first.
+
+All new names must follow the naming conventions documented in FinanceOS.
+
+---
+
+## Git And Version Control
+
+### Commit Philosophy
+
+Commits represent meaningful engineering checkpoints.
+
+Cursor should recommend commit messages like:
+
+- Sprint 0: Repository Foundation
+- Sprint 1: Complete Master Index documentation
+- Sprint 2: Implement Transactions worksheet
+- Sprint 3: Add Dashboard calculations
+
+Avoid generic commit messages.
+
+### Branch Philosophy
+
+- `main` remains stable.
+- New features should be developed on feature branches when requested.
+- Cursor should recommend feature branches for significant implementation work.
+
+### Never Force Push
+
+Cursor must never recommend `git push --force` unless explicitly requested.
+
+---
+
+## Change Control
+
+Before major modifications Cursor must provide an **Impact Summary**.
+
+### Impact Summary Must Include
+
+- Files affected.
+- Worksheets affected.
+- Tables affected.
+- Named ranges affected.
+- Formulas affected.
+- Documentation affected.
+
+### Approval Required
+
+After presenting the impact summary Cursor must wait for user confirmation.
+
+No implementation begins until approval.
+
+---
+
+## Grilling Mode (Mandatory)
+
+Before implementing any new feature, worksheet, formula system, dashboard, workbook module, or engineering workflow:
+
+### Cursor Must Grill The Requirement First
+
+Cursor must:
+
+1. Ask clarifying questions until the requirement is completely understood.
+2. Identify missing decisions, ambiguities, assumptions, trade-offs, and edge cases.
+3. Challenge inconsistent or conflicting requirements instead of silently choosing one.
+4. Summarize the agreed implementation plan.
+5. Wait for explicit user approval before writing or modifying files.
+
+### Grilling Ends Only When
+
+- Requirements are complete.
+- Edge cases are resolved.
+- The implementation summary is approved by the user.
+
+Only then may implementation begin.
+
+---
+
+## Error Handling Rules
+
+When Cursor detects conflicts:
+
+1. Explain the conflict.
+2. Explain possible solutions.
+3. Recommend the safest option.
+4. Wait for user approval.
+
+Never silently resolve architecture or workbook conflicts.
+
+---
+
+## Future Migration Readiness
+
+Every implementation should remain portable to future:
+
+- React
+- TypeScript
+- Web Application
+- Mobile Application
+
+Excel Version 1 remains the canonical implementation.
+
+Cursor should preserve logical separation between:
+
+- Data.
+- Business Logic.
+- Analysis.
+- Planning.
+- Presentation.
+
+Whenever possible.
+
+---
+
+## Immutable FinanceOS Principles
+
+The following principles are frozen unless explicitly updated by the user:
+
+- Documentation-first development.
+- Excel-first Version 1.
+- Architecture decisions are immutable until revised.
+- Engineering standards are immutable until revised.
+- Compatibility across Desktop, Web, and Mobile is mandatory.
+- Cursor implements decisions; it does not invent them.
+- Major structural changes always require approval.
+- Grilling Mode is mandatory before implementation.
+
+---
+
+## End of Rulebook
+
+**FinanceOS Cursor Rulebook — Version 1.0 (Frozen)**
