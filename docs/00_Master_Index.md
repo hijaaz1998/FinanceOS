@@ -121,9 +121,11 @@ The documentation is organized into five engineering layers.
 
 | File                                  | Status          | Purpose                                         |
 | ------------------------------------- | --------------- | ----------------------------------------------- |
-| `19_Current_Implementation_Status.md` | Living Document | Current implementation progress of FinanceOS.   |
-| `20_Development_Roadmap.md`           | Living Document | Engineering roadmap and sprint planning.        |
-| `21_Website_Migration_Readiness.md`   | Living Document | Migration planning for web and mobile versions. |
+| `19_Current_Implementation_Status.md` | Frozen | Current implementation progress of FinanceOS.   |
+| `20_Development_Roadmap.md`           | Frozen | Engineering roadmap and sprint planning.        |
+| `21_Website_Migration_Readiness.md`   | Frozen | Migration planning for web and mobile versions. |
+| `22_Testing_QA_Checklists.md`         | Frozen | Workbook QA framework.                          |
+| `23_Product_Strategy.md`              | Frozen | Business strategy and ecosystem roadmap.        |
 
 ---
 
@@ -155,6 +157,8 @@ Every contributor should read documents in this order.
 | 20    | Current Implementation Status |
 | 21    | Development Roadmap           |
 | 22    | Website Migration Readiness   |
+| 23    | Testing & QA Checklists       |
+| 24    | Product Strategy              |
 
 This reading order mirrors the engineering dependency chain.
 

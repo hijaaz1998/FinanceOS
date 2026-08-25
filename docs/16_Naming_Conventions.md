@@ -303,7 +303,7 @@ Documentation files use numeric ordering.
 | File | Document ID |
 |------|-------------|
 | 01_Project_Vision.md | DOC-001 |
-| 03_Workbook_Architecture.md | DOC-003 |
+| 06_Workbook_Architecture.md | DOC-006 |
 | 10_Business_Engine.md | DOC-010 |
 | 15_Formula_Standards.md | DOC-015 |
 | 23_Product_Strategy.md | DOC-023 |

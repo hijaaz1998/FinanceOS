@@ -4,7 +4,7 @@
 
 **Version:** 1.0
 
-**Status:** **FROZEN**
+**Status:** **Frozen**
 
 **Owner:** FinanceOS Architecture (ChatGPT + User)
 
@@ -12,7 +12,7 @@
 
 **Applies To:** FinanceOS Excel Workbook Version 1
 
-**Last Updated:** 24 August 2026
+**Last Updated:** 23 August 2026
 
 ---
 

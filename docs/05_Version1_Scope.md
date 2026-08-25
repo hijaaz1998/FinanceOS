@@ -1,10 +1,16 @@
 # FinanceOS — Version 1 Scope
 
-Version: 1.0
-Status: **Frozen**
-Owner: FinanceOS Architecture (ChatGPT + User)
-Repository: FinanceOS
-Last Updated: 23 August 2026
+**Document ID:** DOC-005
+
+**Version:** 1.0
+
+**Status:** **Frozen**
+
+**Owner:** FinanceOS Architecture (ChatGPT + User)
+
+**Repository:** FinanceOS
+
+**Last Updated:** 23 August 2026
 
 ---
 
