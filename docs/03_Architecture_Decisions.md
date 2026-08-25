@@ -139,20 +139,26 @@ The workbook is divided into independent functional modules.
 
 ## Primary Modules
 
-- Setup
+Version 1 worksheets are defined by DOC-007 and DOC-016.
+
+- Settings
+- Categories
 - Accounts
-- Transactions
-- Budgets
-- Goals
+- Income Sources
+- Assets
 - Liabilities
-- Investments
+- Recurring Commitments
+- Transactions
+- Goals
+- Helpers
+- Business Engine
+- Analysis Engine
 - Dashboard
 - Insights
-- Settings
-- Lookup Tables
-- Validation Tables
 
 Each module owns its own data.
+
+Budgets are not a Version 1 module. Investments are an Asset Category inside `tblAssets`, not a separate worksheet.
 
 ---
 
@@ -165,6 +171,7 @@ Examples:
 - Accounts exist once.
 - Transactions exist once.
 - Goals exist once.
+- Assets exist once.
 - Liabilities exist once.
 
 Dashboards read data.
@@ -194,7 +201,7 @@ Responsibilities include:
 - EMI calculations.
 - Savings calculations.
 - Goal progress.
-- Budget balances.
+- Asset summaries.
 - Forecast inputs.
 
 No presentation logic belongs here.

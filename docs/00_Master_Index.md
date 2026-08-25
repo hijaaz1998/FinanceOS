@@ -223,11 +223,11 @@ No lower-level document may redefine a higher-level document.
 
 ---
 
-# Frozen Documents vs Living Documents
+# Frozen Documents
 
-FinanceOS distinguishes between immutable specifications and evolving project documents.
+FinanceOS Version 1 architecture documentation is **Frozen**.
 
-## Frozen Documents
+This includes DOC-019, DOC-020, DOC-021, DOC-022, and DOC-023.
 
 Frozen documents require explicit architectural approval before modification.
 
@@ -251,26 +251,17 @@ These include:
 * Naming Conventions
 * UI / UX Design System
 * Excel Compatibility
+* Current Implementation Status
+* Development Roadmap
+* Website Migration Readiness
+* Testing & QA Checklists
+* Product Strategy
 
 Changes to frozen documents require:
 
 1. Architectural review.
 2. Documentation update.
 3. Git checkpoint.
-
----
-
-## Living Documents
-
-Living documents evolve during development.
-
-These include:
-
-* Current Implementation Status
-* Development Roadmap
-* Website Migration Readiness
-
-Living documents may be updated whenever implementation progresses.
 
 ---
 
@@ -286,13 +277,21 @@ Each engineering topic has exactly one owning document.
 | Engineering Standards      | Engineering Standards    |
 | Workbook Structure         | Workbook Architecture    |
 | Worksheet Responsibilities | Worksheet Specifications |
+| Worksheet Names            | Worksheet Specifications / Naming Conventions |
 | Business Logic             | Business Rules           |
 | Transaction Logic          | Transactions Model       |
+| Financial Calculations     | Business Engine          |
 | Formula Rules              | Formula Standards        |
 | Validation Rules           | Validation and Helpers   |
 | Naming Rules               | Naming Conventions       |
 | UI Rules                   | UI / UX Design System    |
 | Compatibility              | Excel Compatibility      |
+
+Worksheet names for Version 1 are defined by Worksheet Specifications (DOC-007) and Naming Conventions (DOC-016).
+
+Business Rules (DOC-008) contain high-level financial principles only. Transaction behavior is defined in the Transactions Model (DOC-009). DOC-008 must reference DOC-009 instead of duplicating transaction rules.
+
+Helpers own validation lists, lookup outputs, named ranges, and intermediate helper outputs only. Business Engine owns every deterministic financial calculation.
 
 Cursor must never duplicate ownership across documents.
 
@@ -438,7 +437,7 @@ Cursor follows the Rulebook and Skills before implementation.
 | Repository Structure     | Complete    |
 | Cursor Rulebook          | Complete    |
 | Grill Before Build Skill | Complete    |
-| Documentation            | In Progress |
+| Documentation            | Complete    |
 | Workbook Engineering     | Not Started |
 | Dashboard Engineering    | Not Started |
 | Website Migration        | Planning    |

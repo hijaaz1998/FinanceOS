@@ -353,10 +353,10 @@ Progress indicators visualize completion.
 
 | Indicator | Used In |
 |-----------|---------|
-| Linear Progress | Budget utilization. |
+| Linear Progress | Goal and spending progress. |
 | Circular Progress | Goal completion. |
 | Ring Progress | Health score and emergency fund. |
-| Allocation Bar | Investments and spending distribution. |
+| Allocation Bar | Assets and spending distribution. |
 
 Progress values always come from Business Engine outputs.
 
@@ -619,11 +619,11 @@ Highest outstanding liabilities appear first.
 
 ---
 
-# Investment Card Layout
+# Asset Card Layout
 
-Investment cards summarize allocation.
+Asset cards summarize allocation.
 
-## Investment Card Components
+## Asset Card Components
 
 - Total Value.
 - Allocation Bar.

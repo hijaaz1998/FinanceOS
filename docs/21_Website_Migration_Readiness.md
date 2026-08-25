@@ -166,7 +166,7 @@ The design system becomes reusable React components.
 | HealthScoreCard | Financial Health Card |
 | CashFlowCard | Cash Flow Card |
 | InsightCard | Insights Card |
-| AllocationBar | Investment Card |
+| AllocationBar | Asset Card |
 | ProgressRing | Goal Progress |
 | StatusBadge | Badge System |
 

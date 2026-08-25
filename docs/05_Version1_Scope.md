@@ -100,7 +100,6 @@ Version 1 includes categorized transactions.
 
 Categories support:
 
-- Budgeting.
 - Analytics.
 - Dashboard.
 - Insights.
@@ -109,12 +108,9 @@ Categories support:
 
 ## Budget Module
 
-Users can:
+Budgets are **not** part of FinanceOS Version 1.
 
-- Create monthly budgets.
-- Compare planned vs actual.
-- View remaining budget.
-- Track overspending.
+Version 1 does not include a Budget Module, Budget Engine, Budget Card, Budgets worksheet, or planned-versus-actual budget outputs.
 
 ---
 
@@ -151,9 +147,9 @@ EMI calculations become part of financial analysis.
 
 ---
 
-## Investments Module
+## Assets Module
 
-Users can manually track:
+Users can manually track assets, including the Investment category:
 
 - SIPs.
 - Mutual funds.
@@ -163,6 +159,9 @@ Users can manually track:
 - PPF.
 - EPF.
 - Other investments.
+- Physical assets.
+
+Investments are an Asset Category inside `tblAssets`, not a separate worksheet.
 
 Version 1 does not automatically sync investment prices.
 
@@ -179,7 +178,7 @@ Dashboard includes:
 - Savings.
 - Goals progress.
 - Liability summary.
-- Budget summary.
+- Asset summary.
 - Financial health indicators.
 
 ---
@@ -195,7 +194,6 @@ Examples:
 - Savings momentum.
 - Goal completion forecasts.
 - EMI impact.
-- Budget alerts.
 
 No external AI API is required.
 
@@ -303,6 +301,17 @@ The following features are intentionally excluded.
 - Crypto APIs.
 
 Manual tracking only.
+
+---
+
+## Budgets
+
+- Budget Module.
+- Budget Engine.
+- Budget Card.
+- Budgets worksheet.
+
+Budgets are not part of Version 1.
 
 ---
 
@@ -438,12 +447,18 @@ Cursor must not silently expand Version 1.
 Version 1 permanently includes:
 
 - Excel Financial Operating System.
+- Settings.
+- Categories.
 - Accounts.
-- Transactions.
-- Budgets.
-- Goals.
+- Income Sources.
+- Assets.
 - Liabilities.
-- Investments.
+- Recurring Commitments.
+- Transactions.
+- Goals.
+- Helpers.
+- Business Engine.
+- Analysis Engine.
 - Dashboard.
 - Deterministic AI-style Insights.
 - Financial Simulations.

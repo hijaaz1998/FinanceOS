@@ -16,7 +16,9 @@
 
 # Purpose
 
-The Helpers worksheet is the internal engineering layer that powers validation, lookup tables, reusable dropdown lists, and intermediate workbook outputs.
+The Helpers worksheet is the internal engineering layer that powers validation, lookup tables, reusable dropdown lists, named ranges, and intermediate helper outputs.
+
+It does not own deterministic financial calculations.
 
 It is not a user-facing worksheet.
 
@@ -35,6 +37,7 @@ Instead of creating validation lists inside multiple worksheets:
 - Helpers owns lookup lists.
 - User worksheets consume lookup lists.
 - Business Engine consumes lookup outputs when required.
+- Business Engine owns every deterministic financial calculation.
 
 This architecture is immutable.
 
@@ -57,6 +60,8 @@ The Helpers worksheet is responsible for:
 - Intermediate validation outputs.
 
 It does **not** store business entities.
+
+It does **not** own deterministic financial calculations. Those belong to the Business Engine.
 
 ---
 
@@ -1255,6 +1260,7 @@ User-facing worksheets remain visible.
 - Accounts
 - Assets
 - Liabilities
+- Recurring Commitments
 - Categories
 - Income Sources
 - Settings
@@ -1432,7 +1438,7 @@ The following validation decisions are permanently frozen.
 
 ### Workbook Rules
 
-- Helpers owns validation.
+- Helpers owns validation lists, lookup outputs, named ranges, and intermediate helper outputs.
 - Named ranges are reusable.
 - Spill ranges are the default strategy.
 - Dynamic validation references active entities only.

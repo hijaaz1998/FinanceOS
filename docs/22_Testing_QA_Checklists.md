@@ -603,17 +603,17 @@ Closed liabilities should not appear as active.
 
 ---
 
-## Investment Card
+## Asset Card
 
 Verify:
 
-- Investment Value.
+- Asset Value.
 - Allocation Breakdown.
 - Appreciation.
 - Asset Categories.
 - Total Asset Value.
 
-Investment allocation percentages must total correctly.
+Asset allocation percentages must total correctly.
 
 ---
 

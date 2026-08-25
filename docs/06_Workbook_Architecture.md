@@ -59,9 +59,9 @@ Responsible for onboarding and configuration.
 
 Contains:
 
-- User information.
 - Settings.
-- Lookup values.
+- Categories.
+- Lookup values (owned by Helpers).
 - Configuration tables.
 
 ---
@@ -73,11 +73,12 @@ Responsible for storing financial information.
 Contains:
 
 - Accounts.
+- Income Sources.
 - Transactions.
-- Budgets.
 - Goals.
 - Liabilities.
-- Investments.
+- Recurring Commitments.
+- Assets.
 
 No dashboard logic belongs here.
 
@@ -89,11 +90,9 @@ Responsible for calculations.
 
 Contains:
 
-- Business calculations.
-- Financial summaries.
-- Lookup helpers.
-- Derived metrics.
-- Validation helpers.
+- Business Engine.
+- Analysis Engine.
+- Helpers (validation lists, lookup outputs, named ranges, and intermediate helper outputs only).
 
 Users rarely interact directly with this layer.
 
@@ -121,16 +120,16 @@ Users move through FinanceOS in a guided order.
 
 | Order | Worksheet Group | Purpose |
 |-------|-----------------|---------|
-| 1 | Welcome / Setup | First-time onboarding |
+| 1 | Settings | Preferences and configuration |
 | 2 | Accounts | Financial resources |
-| 3 | Transactions | Daily money movement |
-| 4 | Budgets | Spending plans |
+| 3 | Income Sources | Income lookup |
+| 4 | Transactions | Daily money movement |
 | 5 | Goals | Savings objectives |
 | 6 | Liabilities | Debt management |
-| 7 | Investments | Wealth tracking |
-| 8 | Dashboard | Financial overview |
-| 9 | Insights | AI-style explanations |
-| 10 | Settings | Preferences and configuration |
+| 7 | Recurring Commitments | Scheduled obligations |
+| 8 | Assets | Wealth tracking |
+| 9 | Dashboard | Financial overview |
+| 10 | Insights | AI-style explanations |
 
 Navigation follows a financial journey.
 
@@ -146,8 +145,6 @@ Prepare FinanceOS for first use.
 
 Potential worksheets include:
 
-- Welcome
-- Profile
 - Settings
 
 ---
@@ -159,12 +156,13 @@ Primary user interaction.
 Contains:
 
 - Accounts
+- Income Sources
 - Transactions
 - Categories
-- Budgets
 - Goals
 - Liabilities
-- Investments
+- Recurring Commitments
+- Assets
 
 This is where users enter data.
 
@@ -176,10 +174,9 @@ Hidden or protected engineering worksheets.
 
 Examples:
 
-- Lookup Tables
-- Validation Tables
-- Calculations
-- Helper Tables
+- Helpers
+- Business Engine
+- Analysis Engine
 
 Users should rarely edit these.
 
@@ -192,9 +189,7 @@ Presentation worksheets.
 Examples:
 
 - Dashboard
-- Monthly Dashboard
-- Goal Dashboard
-- Net Worth Dashboard
+- Insights
 
 Read-only for most users.
 
@@ -206,13 +201,9 @@ AI-style analysis worksheets.
 
 Examples:
 
-- Financial Health
-- Predictions
-- Survival Analysis
-- Spending Analysis
-- Goal Forecasts
+- Insights
 
-These consume Business Engine outputs.
+These consume Business Engine and Analysis Engine outputs.
 
 ---
 
@@ -222,20 +213,20 @@ FinanceOS Version 1 includes these worksheet responsibilities.
 
 | Worksheet | Responsibility |
 |-----------|----------------|
-| Welcome | Product onboarding |
 | Settings | Global configuration |
-| Accounts | Financial accounts |
-| Transactions | Money movement |
 | Categories | Category definitions |
-| Budgets | Monthly planning |
-| Goals | Savings goals |
+| Accounts | Financial accounts |
+| Income Sources | Income lookup |
+| Assets | Asset and investment-category tracking |
 | Liabilities | Debt tracking |
-| Investments | Investment tracking |
+| Recurring Commitments | Scheduled obligations |
+| Transactions | Money movement |
+| Goals | Savings goals |
+| Helpers | Validation lists, lookup outputs, named ranges, and intermediate helper outputs |
+| Business Engine | Deterministic financial calculations |
+| Analysis Engine | Financial interpretation |
 | Dashboard | Financial overview |
 | Insights | AI-style financial analysis |
-| Lookup Tables | Master lookup values |
-| Validation Tables | Dropdown sources |
-| Helpers | Internal calculations |
 
 Worksheet names remain frozen after specification.
 
@@ -248,11 +239,12 @@ Every major entity belongs to one worksheet.
 | Entity | Owner Worksheet |
 |---------|-----------------|
 | Accounts | Accounts |
+| Income Sources | Income Sources |
 | Transactions | Transactions |
-| Budgets | Budgets |
 | Goals | Goals |
 | Liabilities | Liabilities |
-| Investments | Investments |
+| Recurring Commitments | Recurring Commitments |
+| Assets | Assets |
 | Categories | Categories |
 
 Dashboard never owns entities.
@@ -290,7 +282,9 @@ Relationships remain stable even if names change.
 
 # Lookup Worksheet Architecture
 
-Lookup tables provide controlled values.
+Lookup tables live on the Helpers worksheet.
+
+Helpers own lookup lists, lookup outputs, named ranges, and intermediate helper outputs.
 
 Examples:
 
@@ -307,7 +301,9 @@ Every dropdown references lookup tables.
 
 # Validation Worksheet Architecture
 
-Validation worksheets contain:
+Validation outputs live on the Helpers worksheet.
+
+Helpers contain:
 
 - Dropdown sources.
 - Allowed values.
@@ -326,10 +322,9 @@ Responsibilities include:
 
 - Cash flow summaries.
 - Net worth calculations.
-- Budget calculations.
 - Goal calculations.
 - Liability calculations.
-- Investment summaries.
+- Asset summaries.
 
 Business Engine contains reusable outputs.
 
@@ -344,7 +339,6 @@ Examples:
 - Survival Months.
 - Spending Momentum.
 - Savings Rate.
-- Budget Health.
 - Goal Delay Predictions.
 - Financial Health Score.
 
@@ -397,9 +391,9 @@ Protection levels include:
 |---------------|----------|
 | Input worksheets | Yes |
 | Settings | Partial |
-| Lookup Tables | Limited |
-| Validation Tables | No |
 | Helpers | No |
+| Business Engine | No |
+| Analysis Engine | No |
 | Dashboard | Limited |
 | Insights | Read-only |
 
@@ -444,10 +438,10 @@ Engineering worksheets may be hidden.
 
 Purpose:
 
-- Lookup values.
-- Intermediate calculations.
-- Validation lists.
-- Helper outputs.
+- Lookup values (Helpers).
+- Intermediate helper outputs (Helpers).
+- Validation lists (Helpers).
+- Financial calculations (Business Engine).
 
 Hidden sheets remain documented.
 
@@ -459,7 +453,7 @@ Workbook dependency is one-directional.
 
 Settings
 ↓
-Lookup Tables
+Helpers
 ↓
 Input Worksheets
 ↓

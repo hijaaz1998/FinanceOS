@@ -22,9 +22,11 @@ This document defines the immutable financial behavior of FinanceOS Version 1.
 
 Unlike DOC-007, which defines worksheet structure, DOC-008 defines **how FinanceOS behaves** when money moves through the system.
 
+Transaction types, statuses, refunds, cashback, duplicates, pending behavior, and cancelled behavior are defined in DOC-009. This document contains high-level business principles only and must not duplicate those transaction rules.
+
 Every formula, validation, calculation, forecast, and dashboard metric must follow these rules.
 
-If workbook implementation differs from these rules, **this document is the source of truth**.
+If workbook implementation differs from these high-level principles, **this document is the source of truth**. If it differs from transaction behavior, **DOC-009 is the source of truth**.
 
 ---
 
@@ -116,95 +118,22 @@ Transactions are immutable financial history.
 
 Every financial activity is represented by one transaction record.
 
----
+Canonical transaction behavior is defined in DOC-009, including:
 
-## Transaction Rule 1 — Income
+* Transaction types (Income, Expense, Transfer, Adjustment).
+* Transaction statuses (Completed, Pending, Cancelled, Reconciled).
+* Refunds, cashback, and duplicates.
+* Goal contribution transaction mechanics.
 
-Income represents money entering the user's financial system.
+High-level financial principles in this document:
 
-Examples:
+* Income increases cash.
+* Expense decreases cash available for spending.
+* Transfers move cash between accounts without changing income, expense, or Net Worth.
+* Goal contributions earmark savings and do not change Net Worth.
+* Asset purchases convert cash into assets and do not change Net Worth immediately.
 
-* Salary
-* Freelance
-* Rental Income
-* Cashback
-* Refund
-* Interest
-* Business Income
-* Gift Received
-
-### Income Behavior
-
-* Cash increases.
-* Income analytics increase.
-* Account balance increases.
-* Net Worth increases.
-
----
-
-## Transaction Rule 2 — Expense
-
-Expense represents money leaving an account.
-
-Examples:
-
-* Food
-* Rent
-* Shopping
-* Utilities
-* Travel
-* Entertainment
-* Healthcare
-
-### Expense Behavior
-
-* Cash decreases.
-* Expense analytics increase.
-* Spending category updates.
-* Savings decrease if income unchanged.
-
----
-
-## Transaction Rule 3 — Transfer
-
-Transfers move money between user-owned accounts.
-
-Examples:
-
-* HDFC Savings → Wallet.
-* SBI Savings → Cash.
-* Cash → ICICI Savings.
-
-### Transfer Behavior
-
-* Source account decreases.
-* Destination account increases.
-* Total Cash unchanged.
-* Income unchanged.
-* Expenses unchanged.
-* Net Worth unchanged.
-
-Transfers are excluded from spending reports.
-
----
-
-## Transaction Rule 4 — Adjustment
-
-Adjustment corrects balances manually.
-
-Examples:
-
-* Bank reconciliation.
-* Incorrect opening balance.
-* Manual correction.
-
-### Adjustment Behavior
-
-* Account balance changes.
-* Analytics ignore adjustments.
-* Dashboard records adjustment separately.
-
-Use adjustments sparingly.
+See DOC-009 for the complete transaction model.
 
 ---
 
@@ -276,6 +205,13 @@ Credit card spending must never be counted twice.
 # Transfer Rules
 
 Transfers follow strict accounting rules.
+
+Canonical transfer transaction behavior is defined in DOC-009.
+
+High-level principles:
+
+* Transfers move cash between accounts.
+* Transfers never change income, expense, savings, or Net Worth.
 
 ---
 
@@ -428,83 +364,47 @@ Payment Method affects reporting only.
 
 # Transaction Status Rules
 
-Supported statuses:
+Canonical transaction status behavior is defined in DOC-009.
 
-* Completed
-* Pending
-* Cancelled
+Version 1 statuses include Completed, Pending, Cancelled, and Reconciled.
 
-### Completed
+High-level principles:
 
-Included everywhere.
-
-### Pending
-
-Included in forecasts.
-
-Excluded from completed spending.
-
-### Cancelled
-
-Ignored in calculations.
-
-Preserved historically.
+* Completed participates in historical cash flow and balances.
+* Pending appears in forecasts only.
+* Cancelled is preserved historically and excluded from calculations.
 
 ---
 
 # Duplicate Transaction Rules
 
-FinanceOS does not automatically merge duplicates.
+Canonical duplicate policy is defined in DOC-009.
 
-Users are responsible for reviewing duplicates.
-
-Future versions may include duplicate detection.
+High-level principle: FinanceOS does not automatically merge or delete duplicates.
 
 ---
 
 # Refund Rules
 
-Refund is treated as Income.
+Canonical refund behavior is defined in DOC-009.
 
-Rules:
-
-* Income Source = Refund.
-* Category = Refund Income.
-* Account increases.
-* Expense history remains unchanged.
-
-Refunds do not erase original expenses.
+High-level principle: a refund is a new Income event and never erases the original expense.
 
 ---
 
 # Cashback Rules
 
-Cashback is always Income.
+Canonical cashback behavior is defined in DOC-009.
 
-Never negative expense.
-
-Income Source:
-
-Cashback.
-
-Category:
-
-Cashback Income.
+High-level principle: cashback is Income, never a negative expense.
 
 ---
 
 # Transaction Immutability Rules
 
-Transactions represent historical truth.
+Canonical historical integrity rules are defined in DOC-009.
 
-Allowed edits:
-
-* Notes.
-* Status.
-* Category correction.
-* Payment Method correction.
-
-Changing Amount or Account after reconciliation should require user confirmation.
+High-level principle: transactions represent historical truth and are not deleted after use.
 
 ---
 
@@ -512,13 +412,13 @@ Changing Amount or Account after reconciliation should require user confirmation
 
 | Rule Category   | Owner   |
 | --------------- | ------- |
-| Transactions    | DOC-008 |
+| Transactions    | DOC-009 |
 | Accounts        | DOC-008 |
-| Transfers       | DOC-008 |
+| Transfers       | DOC-009 |
 | Income Sources  | DOC-008 |
 | Categories      | DOC-008 |
 | Payment Methods | DOC-008 |
-| Status Behavior | DOC-008 |
+| Status Behavior | DOC-009 |
 
 ---
 
@@ -527,13 +427,12 @@ Changing Amount or Account after reconciliation should require user confirmation
 This section freezes:
 
 * Financial philosophy.
-* Transaction behavior.
+* High-level transaction principles (canonical detail in DOC-009).
 * Account behavior.
-* Transfer behavior.
+* High-level transfer principles (canonical detail in DOC-009).
 * Income Source behavior.
 * Category behavior.
 * Payment Method behavior.
-* Transaction Status behavior.
 
 
 ---
@@ -632,7 +531,7 @@ Examples:
 
 | Category         | Dashboard Group |
 | ---------------- | --------------- |
-| Investment       | Investments     |
+| Investment       | Assets          |
 | Property         | Property        |
 | Retirement Asset | Retirement      |
 | Physical Asset   | Physical Wealth |
@@ -1274,7 +1173,9 @@ Transactions with Destination Type = Goal increase Goal Savings.
 
 Goal contributions reduce available cash.
 
-They do **not** reduce Net Worth.
+They earmark savings.
+
+They do **not** change Net Worth.
 
 ---
 
@@ -1286,7 +1187,11 @@ Goals receive money only through Goal transactions.
 
 ## Funding Rule 1
 
-Every Goal contribution creates an Expense transaction with a Goal destination.
+Every Goal contribution earmarks savings for that goal.
+
+Canonical Goal contribution transaction mechanics are defined in DOC-009.
+
+Goal contributions do not change Net Worth.
 
 ---
 
@@ -1298,19 +1203,17 @@ Transfers between accounts do not increase Goal Savings.
 
 ## Funding Rule 3
 
-Deleting a Goal transaction reduces Goal Savings immediately.
+Cancelled Goal transactions do not affect Goal Savings.
+
+Canonical cancel/delete policy is defined in DOC-009. Version 1 does not delete used transactions.
 
 ---
 
 ## Funding Rule 4
 
-Cancelled Goal transactions do not affect Goal Savings.
-
----
-
-## Funding Rule 5
-
 Refunded Goal transactions reverse Goal Savings.
+
+Canonical refund behavior is defined in DOC-009.
 
 ---
 
@@ -1318,7 +1221,7 @@ Refunded Goal transactions reverse Goal Savings.
 
 Savings represent money intentionally retained after expenses.
 
-FinanceOS distinguishes savings from investments.
+FinanceOS distinguishes savings from assets.
 
 ---
 
@@ -1328,7 +1231,7 @@ Savings answer:
 
 **"How much money remained after spending?"**
 
-Investments answer:
+Assets answer:
 
 **"Where did saved money move?"**
 
@@ -1376,9 +1279,9 @@ Transfers do not change savings.
 
 ## Savings Rule 5 — Goal Contributions Are Savings Behavior
 
-Goal contribution is treated as intentional saving behavior.
+Goal contribution is treated as earmarked savings.
 
-Cash leaves spending account.
+Cash remains part of Net Worth.
 
 Goal balance increases.
 
@@ -1608,17 +1511,21 @@ Cash accounts are assets.
 
 ## Net Worth Rule 2 — Goal Savings
 
+Goal contributions move money into earmarked savings.
+
 Goal savings remain cash.
 
 Goals do not create separate assets.
+
+Goal contributions do not change Net Worth.
 
 Avoid double counting.
 
 ---
 
-## Net Worth Rule 3 — Investment Purchases
+## Net Worth Rule 3 — Asset Purchases
 
-Investment purchase converts cash into asset.
+An asset purchase, including the Investment category inside `tblAssets`, converts cash into an asset.
 
 Net Worth unchanged immediately.
 
@@ -1732,7 +1639,7 @@ Available cash includes:
 * Emergency cash.
 * Cash equivalents.
 
-Investments excluded.
+Investment-category assets excluded.
 
 Property excluded.
 
@@ -2033,7 +1940,7 @@ No subjective weighting after Version 1 freeze.
 | Debt Health           | 20%    |
 | Cash Flow Health      | 15%    |
 | Goal Progress Health  | 10%    |
-| Investment Health     | 10%    |
+| Asset Health          | 10%    |
 
 Weights total 100%.
 
@@ -2099,7 +2006,7 @@ Measures:
 
 ---
 
-## Investment Health Rules
+## Asset Health Rules
 
 Measures diversification only.
 
@@ -2171,7 +2078,7 @@ Categories:
 * Spending Momentum.
 * Debt Momentum.
 * Net Worth Momentum.
-* Investment Momentum.
+* Asset Momentum.
 
 Momentum never predicts future by itself.
 
@@ -2210,6 +2117,8 @@ No unsupported advice.
 ---
 
 ## Insight Categories
+
+Canonical Version 1 insight categories are the nine categories frozen in DOC-013.
 
 ### Health Insights
 
@@ -2679,152 +2588,41 @@ When an edge case occurs:
 
 # Refund Rules
 
-Refunds reverse money received after a previous expense.
+Canonical refund behavior is defined in DOC-009.
 
----
-
-## Refund Rule 1 — Refund Creates Income
-
-Refunds are recorded as **Income** transactions.
-
-They never modify or delete the original expense.
-
----
-
-## Refund Rule 2 — Refund References Original Spending Category
-
-Refund Category = Refund Income.
-
-Original expense category remains unchanged.
-
----
-
-## Refund Rule 3 — Partial Refund
-
-Partial refund increases cash only by refunded amount.
-
-Original expense remains full historical value.
-
----
-
-## Refund Rule 4 — Full Refund
-
-Expense remains historical.
-
-Refund offsets spending analytics through separate income reporting.
+High-level principle: refunds are new Income events and never delete previous expenses.
 
 ---
 
 # Cashback Rules
 
-Cashback is not a discount.
+Canonical cashback behavior is defined in DOC-009.
 
-It is income received after spending.
-
----
-
-## Cashback Rule 1
-
-Cashback transaction type = Income.
-
----
-
-## Cashback Rule 2
-
-Income Source = Cashback.
-
----
-
-## Cashback Rule 3
-
-Cashback increases account balance.
-
----
-
-## Cashback Rule 4
-
-Cashback never modifies historical spending.
+High-level principle: cashback is Income received after spending, not a discount.
 
 ---
 
 # Cancelled Transaction Rules
 
-Cancelled transactions preserve history while excluding financial impact.
+Canonical cancelled-transaction behavior is defined in DOC-009.
 
----
-
-## Cancelled Rule 1
-
-Cancelled transactions remain in transaction history.
-
----
-
-## Cancelled Rule 2
-
-Cancelled transactions do not affect:
-
-* Cash Flow.
-* Savings.
-* Goals.
-* Net Worth.
-* Dashboard metrics.
-* Forecasts.
-
----
-
-## Cancelled Rule 3
-
-Cancelled transactions remain searchable.
+High-level principle: cancelled records remain in history and are excluded from calculations.
 
 ---
 
 # Pending Transaction Rules
 
-Pending transactions represent expected future activity.
+Canonical pending-transaction behavior is defined in DOC-009.
 
----
-
-## Pending Rule 1
-
-Pending income appears only in Forecast.
-
----
-
-## Pending Rule 2
-
-Pending expense appears only in Forecast.
-
----
-
-## Pending Rule 3
-
-Pending transactions never affect completed monthly summaries.
-
----
-
-## Pending Rule 4
-
-Changing Pending → Completed immediately updates Business Engine outputs.
+High-level principle: pending activity appears in forecasts only, not in completed cash flow.
 
 ---
 
 # Duplicate Transaction Rules
 
-FinanceOS does not automatically merge transactions.
+Canonical duplicate policy is defined in DOC-009.
 
----
-
-## Duplicate Rule 1
-
-Users may intentionally record similar transactions.
-
----
-
-## Duplicate Rule 2
-
-Future duplicate detection may suggest duplicates.
-
-Version 1 never auto-removes duplicates.
+High-level principle: Version 1 never auto-merges or auto-removes duplicates.
 
 ---
 
@@ -3192,9 +2990,8 @@ These behaviors are mandatory.
 | ------------------ | ---------------------------------------------------------- |
 | Transactions       | Single source of truth.                                    |
 | Transfers          | Never affect income or expense totals.                     |
-| Goal Contributions | Increase goal savings without reducing Net Worth.          |
-| Investments        | Convert cash into assets.                                  |
-| Assets             | Current Value editable, Purchase Value immutable.          |
+| Goal Contributions | Earmark savings without changing Net Worth.                |
+| Assets             | Investment category lives in tblAssets; Current Value editable, Purchase Value immutable. |
 | Liabilities        | Outstanding Balance user-maintained in Version 1.          |
 | EMIs               | Forecasted through commitments, paid through transactions. |
 | Cash Flow          | Transfers excluded.                                        |
@@ -3237,7 +3034,7 @@ The following behaviors are permanently frozen for FinanceOS Version 1.
 ### Workbook Rules
 
 * Documentation-first development.
-* Helpers own validation.
+* Helpers own validation lists, lookup outputs, named ranges, and intermediate helper outputs.
 * Business Engine owns calculations.
 * Analysis Engine owns interpretation.
 * Dashboard owns presentation.

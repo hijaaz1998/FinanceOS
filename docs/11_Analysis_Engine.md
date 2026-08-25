@@ -92,7 +92,7 @@ It does **not** generate the final narrative explanation.
 - Debt Burden
 - Cash Flow Stability
 - Goal Progress
-- Investment Allocation
+- Asset Allocation
 
 ## Health Outputs
 
@@ -324,7 +324,7 @@ The score is calculated from multiple independent dimensions instead of a single
 | Debt Health | Debt Burden |
 | Cash Flow Health | Monthly Surplus Stability |
 | Goal Health | Goal Completion Progress |
-| Investment Health | Asset Allocation |
+| Asset Health | Asset Allocation |
 
 Each dimension contributes independently.
 
@@ -520,7 +520,7 @@ Every insight contains:
 
 ## Insight Categories
 
-Version 1 supports:
+Version 1 supports exactly nine insight categories.
 
 - Financial Health
 - Cash Flow
@@ -528,8 +528,7 @@ Version 1 supports:
 - Income
 - Goals
 - Liabilities
-- Investments
-- Budget
+- Assets
 - Cash Runway
 - Purchase Decisions
 

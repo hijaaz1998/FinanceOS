@@ -85,12 +85,11 @@ Dashboard follows a fixed vertical layout.
 4. Net Worth Card
 5. Goals Card
 6. Liabilities Card
-7. Budget Card
-8. Investments Card
-9. Financial Health Card
-10. Recent Transactions Preview
-11. Insights Preview
-12. Quick Navigation Footer
+7. Assets Card
+8. Financial Health Card
+9. Recent Transactions Preview
+10. Insights Preview
+11. Quick Navigation Footer
 
 This order is frozen.
 
@@ -254,36 +253,21 @@ Each card includes:
 
 # Budget Card
 
-The Budget Card measures spending against planned limits.
+The Budget Card is **not included** in FinanceOS Version 1.
+
+Version 1 does not include a Budget Module, Budget Engine, or planned-versus-actual budget outputs.
+
+---
+
+# Assets Card
+
+The Assets Card summarizes owned assets, including the Investment category inside `tblAssets`.
 
 ## Card Contents
 
 | Metric | Source |
 |--------|--------|
-| Budget Allocated | Business Engine |
-| Budget Spent | Business Engine |
-| Remaining Budget | Business Engine |
-| Utilization Percentage | Business Engine |
-
----
-
-## Budget Display Rules
-
-Display progress indicators for major spending categories.
-
-Highlight overspending visually.
-
----
-
-# Investments Card
-
-The Investments Card summarizes owned assets.
-
-## Card Contents
-
-| Metric | Source |
-|--------|--------|
-| Total Investment Value | Business Engine |
+| Total Asset Value | Business Engine |
 | Gold Value | Business Engine |
 | Mutual Fund Value | Business Engine |
 | Stock Value | Business Engine |
@@ -291,7 +275,7 @@ The Investments Card summarizes owned assets.
 
 ---
 
-## Investment Display Rules
+## Asset Display Rules
 
 Display category totals before individual assets.
 
@@ -540,8 +524,7 @@ The Dashboard is the navigation hub of FinanceOS.
 | Cash Flow | Transactions |
 | Goals | Goals |
 | Liabilities | Liabilities |
-| Investments | Assets |
-| Budget | Categories |
+| Assets | Assets |
 | Insights | Insights |
 | Settings | Settings |
 
@@ -574,7 +557,6 @@ Displays progress toward a measurable goal.
 Examples:
 
 - Goal Completion
-- Budget Utilization
 - Emergency Fund Progress
 
 ### Summary Card
@@ -631,9 +613,8 @@ Progress indicators appear throughout FinanceOS.
 | Progress Type | Used In |
 |--------------|---------|
 | Goal Progress | Goals Card |
-| Budget Progress | Budget Card |
 | Savings Progress | Emergency Fund |
-| Investment Allocation | Investment Card |
+| Asset Allocation | Assets Card |
 | Debt Payoff Progress | Liability Card |
 
 Version 1 uses Excel conditional formatting to render progress indicators.
@@ -697,10 +678,9 @@ Dashboard follows a single-column responsive layout.
 3. Financial Health
 4. Goals
 5. Liabilities
-6. Budget
-7. Investments
-8. Recent Transactions
-9. Insights
+6. Assets
+7. Recent Transactions
+8. Insights
 
 Priority order is frozen.
 
@@ -730,8 +710,7 @@ Dashboard architecture is designed to migrate directly into the FinanceOS web ap
 | Cash Flow Card | Cash Flow Widget |
 | Goals Card | Goals Widget |
 | Liability Card | Debt Widget |
-| Budget Card | Budget Widget |
-| Investments Card | Portfolio Widget |
+| Assets Card | Portfolio Widget |
 | Health Card | Health Widget |
 | Insights Preview | AI Insights Feed |
 
@@ -752,7 +731,7 @@ Mobile application follows the Dashboard card architecture.
 | Dashboard | Home |
 | Goals | Goals Screen |
 | Cash Flow | Cash Flow Screen |
-| Investments | Portfolio Screen |
+| Assets | Portfolio Screen |
 | Liabilities | Debt Screen |
 | Insights | Insights Feed |
 

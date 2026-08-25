@@ -192,7 +192,7 @@ Named ranges exist only for reusable workbook-wide references.
 | rngExpenseCategories | Expense category list. |
 | rngIncomeCategories | Income category list. |
 | rngActiveLiabilities | Liability list. |
-| rngActiveAssets | Investment list. |
+| rngActiveAssets | Asset list. |
 
 Named ranges reference spill outputs generated in Helpers.
 
@@ -864,8 +864,7 @@ FinanceOS Version 1 groups calculations into reusable output modules.
 | Net Worth | Assets minus liabilities. |
 | Goals | Savings progress calculations. |
 | Liabilities | Debt burden calculations. |
-| Investments | Asset allocation and appreciation. |
-| Budget | Budget utilization calculations. |
+| Assets | Asset allocation and appreciation. |
 | Recurring Commitments | Fixed monthly obligations. |
 
 Each module produces reusable outputs prefixed with `out`.
@@ -1122,9 +1121,9 @@ Used for Dashboard visualization.
 
 ---
 
-# Investment Formula Module (Frozen)
+# Asset Formula Module (Frozen)
 
-Investment calculations summarize asset allocation.
+Asset calculations summarize allocation and totals.
 
 ---
 
@@ -1132,16 +1131,16 @@ Investment calculations summarize asset allocation.
 
 | Output Name | Description |
 |-------------|-------------|
-| outInvestmentValue | Total investment value. |
+| outAssetValue | Total asset value. |
 | outGoldValue | Gold assets. |
 | outMutualFundValue | Mutual fund assets. |
 | outStockValue | Stock assets. |
-| outInvestmentAllocation | Allocation percentages. |
-| outInvestmentGrowth | Appreciation totals. |
+| outAssetAllocation | Allocation percentages. |
+| outAssetGrowth | Appreciation totals. |
 
 ---
 
-## Investment Rules
+## Asset Rules
 
 Use Current Value for allocation.
 
@@ -1149,28 +1148,13 @@ Appreciation = Current Value − Purchase Value.
 
 ---
 
-# Budget Formula Module (Frozen)
+# Spending Analysis Formula Module
 
-Budget calculations summarize spending against planned allocations.
+Version 1 does not include a Budget Formula Module.
 
----
+There are no outBudgetSpent, outBudgetRemaining, or outBudgetUtilization outputs.
 
-## Primary Outputs
-
-| Output Name | Description |
-|-------------|-------------|
-| outBudgetSpent | Category spending. |
-| outBudgetRemaining | Remaining allocation. |
-| outBudgetUtilization | Percentage utilized. |
-| outOverspending | Overspending indicator. |
-
----
-
-## Budget Rules
-
-Budget calculations use Expense transactions only.
-
-Transfers excluded.
+Spending analysis uses Cash Flow Expense outputs grouped by category.
 
 ---
 
@@ -1262,7 +1246,7 @@ The following Business Engine formula decisions are frozen.
 
 # Part C Complete
 
-This section freezes the Cash Flow, Account Balance, Net Worth, Goal, Liability, Investment, Budget, and Recurring Commitment formula blueprint for FinanceOS Version 1.
+This section freezes the Cash Flow, Account Balance, Net Worth, Goal, Liability, Asset, Spending Analysis, and Recurring Commitment formula blueprint for FinanceOS Version 1.
 
 
 ---
@@ -1774,15 +1758,15 @@ Goals cards reference reusable outputs only.
 
 ---
 
-## Investment Card Formula Sources
+## Asset Card Formula Sources
 
 | Dashboard Field | Formula Source |
 |-----------------|----------------|
-| Total Investment Value | outInvestmentValue |
+| Total Asset Value | outAssetValue |
 | Gold Value | outGoldValue |
 | Mutual Fund Value | outMutualFundValue |
 | Stock Value | outStockValue |
-| Appreciation | outInvestmentGrowth |
+| Appreciation | outAssetGrowth |
 
 ---
 
@@ -1815,13 +1799,11 @@ Display range:
 
 ---
 
-## Budget Progress Bars
+## Spending Progress
 
-Progress value comes from:
+Version 1 does not include Budget Progress Bars or outBudgetUtilization.
 
-outBudgetUtilization
-
-Display remaining percentage separately.
+Spending analysis uses Cash Flow category totals.
 
 ---
 
@@ -1949,7 +1931,7 @@ Conditional formatting never changes values.
 Apply conditional formatting to:
 
 - Goal progress.
-- Budget utilization.
+- Spending progress.
 - Savings progress.
 - Emergency fund progress.
 - Debt payoff progress.
@@ -1985,7 +1967,7 @@ Verify:
 - Net worth.
 - Goal progress.
 - Debt totals.
-- Budget utilization.
+- Category spending.
 
 ---
 

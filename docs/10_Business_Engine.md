@@ -54,7 +54,6 @@ The Business Engine owns deterministic calculations for:
 * Liabilities.
 * Goal Progress.
 * Recurring Commitments.
-* Budget Utilization.
 * Financial Health Inputs.
 * Forecast Inputs.
 * Dashboard KPIs.
@@ -96,7 +95,7 @@ Business Engine consumes information from multiple worksheets.
 | Recurring Commitments | Scheduled obligations.               |
 | Transactions          | Historical financial activity.       |
 | Goals                 | Planning targets.                    |
-| Helpers               | Validation outputs and lookup lists. |
+| Helpers               | Validation lists, lookup outputs, named ranges, and intermediate helper outputs. |
 
 Business Engine never references Dashboard or Insights.
 
@@ -115,7 +114,6 @@ The engine produces reusable outputs grouped into modules.
 | Goal Engine         | Progress calculations.              |
 | Liability Engine    | Debt calculations.                  |
 | Asset Engine        | Asset valuation calculations.       |
-| Budget Engine       | Budget utilization metrics.         |
 | Net Worth Engine    | Wealth calculations.                |
 | Forecast Engine     | Future financial calculations.      |
 | Health Input Engine | Inputs for Analysis Engine scoring. |
@@ -136,10 +134,9 @@ Business Engine is divided into logical calculation sections.
 4. Goal Calculations.
 5. Liability Calculations.
 6. Asset Calculations.
-7. Budget Calculations.
-8. Net Worth Calculations.
-9. Forecast Calculations.
-10. Health Score Inputs.
+7. Net Worth Calculations.
+8. Forecast Calculations.
+9. Health Score Inputs.
 
 This order is frozen.
 
@@ -315,7 +312,6 @@ Naming is frozen.
 | Net Worth                | Business Engine |
 | Outstanding Debt         | Business Engine |
 | Asset Allocation         | Business Engine |
-| Budget Usage             | Business Engine |
 | Forecast Closing Balance | Business Engine |
 
 Analysis Engine may consume these values but never recreate them.
@@ -729,7 +725,7 @@ Examples:
 
 * Transfers.
 * Goal Contributions.
-* Investments.
+* Asset purchases.
 * Liability Payments.
 
 ---
@@ -1271,7 +1267,7 @@ Reads data from:
 | Worksheet    | Purpose                 |
 | ------------ | ----------------------- |
 | Assets       | Asset records.          |
-| Transactions | Investment purchases.   |
+| Transactions | Asset purchases.        |
 | Settings     | Currency configuration. |
 
 ---
@@ -1284,7 +1280,7 @@ Reads data from:
 | Asset Appreciation       | Dashboard KPI       |
 | Appreciation Percentage  | Dashboard KPI       |
 | Asset Allocation         | Dashboard charts    |
-| Investment Contributions | Dashboard cards     |
+| Asset Contributions      | Dashboard cards     |
 | Asset Category Totals    | Dashboard summaries |
 
 ---
@@ -1371,15 +1367,15 @@ Outputs consumed by Dashboard.
 
 ---
 
-# Investment Contribution Calculation
+# Asset Contribution Calculation
 
-Calculates investment purchases made through Transactions.
+Calculates asset purchases made through Transactions, including the Investment category inside `tblAssets`.
 
 ---
 
 ## Rules
 
-Only Destination Type = Investment participates.
+Only transactions that purchase an Asset participate.
 
 Grouped by Asset ID.
 
@@ -1390,7 +1386,7 @@ Grouped by Asset ID.
 | Output                       | Purpose       |
 | ---------------------------- | ------------- |
 | Total Assets                 | Dashboard KPI |
-| Investment Value             | Dashboard KPI |
+| Investment Category Value    | Dashboard KPI |
 | Appreciation Total           | Dashboard KPI |
 | Depreciation Total           | Dashboard KPI |
 | Asset Allocation by Category | Dashboard     |
@@ -1603,7 +1599,7 @@ Transfers never affect Net Worth.
 
 ### Rule 4
 
-Investment purchases convert cash into assets.
+Asset purchases convert cash into assets.
 
 ### Rule 5
 
@@ -1631,7 +1627,7 @@ Business Engine owns calculations for:
 * Current Value.
 * Appreciation.
 * Allocation.
-* Investment Totals.
+* Asset Totals.
 
 ### Liabilities
 
@@ -1668,7 +1664,7 @@ The following rules are frozen.
 
 This section freezes the Goal Engine, Asset Engine, Liability Engine, Net Worth Engine, reusable outputs, and ownership rules.
 
-Part D freezes the Forecast Engine, Budget Engine, Recurring Commitment Engine, and Financial Health input calculations.
+Part D freezes the Forecast Engine, Recurring Commitment Engine, and Financial Health input calculations.
 
 
 ---
@@ -1818,7 +1814,7 @@ Groups commitment value by type.
 * Utilities
 * Insurance
 * Subscription
-* Investment Contribution
+* Asset Contribution
 * SIP
 * Savings Transfer
 * Membership
@@ -1828,132 +1824,63 @@ Dashboard consumes grouped totals.
 
 ---
 
-# Budget Engine (Frozen)
+# Budget Engine
 
-The Budget Engine measures planned spending against actual spending.
+The Budget Engine is **not included** in FinanceOS Version 1.
 
-Budgets are deterministic spending limits.
+Version 1 does not include a Budget Module, Budgets worksheet, Budget Card, or planned-versus-actual budget outputs.
 
-Version 1 uses category-level budget calculations.
+Spending remains visible through Transactions, Categories, Dashboard, and Insights.
+
+The following budget calculation headings are retained only as Version 1 exclusions.
 
 ---
 
 # Budget Philosophy
 
-Budget answers:
-
-* How much was planned?
-* How much was spent?
-* How much remains?
-* Which categories exceeded budget?
-
-The Budget Engine never recommends spending behavior.
+Budgets are not part of Version 1. There is no planned-versus-actual budget model.
 
 ---
 
 # Budget Engine Input Sources
 
-Reads:
-
-| Worksheet    | Purpose                       |
-| ------------ | ----------------------------- |
-| Categories   | Budget categories.            |
-| Transactions | Spending history.             |
-| Settings     | Financial year configuration. |
+Not applicable in Version 1.
 
 ---
 
 # Budget Output Metrics
 
-| Output                        | Purpose            |
-| ----------------------------- | ------------------ |
-| Budget Allocated              | Dashboard KPI      |
-| Budget Spent                  | Dashboard KPI      |
-| Budget Remaining              | Dashboard KPI      |
-| Budget Utilization Percentage | Dashboard Progress |
-| Budget Overspend Amount       | Analysis Input     |
+Version 1 produces no budget outputs.
 
 ---
 
 # Budget Allocation Calculation
 
-Calculates planned spending for each category.
-
----
-
-## Rules
-
-### Rule 1
-
-One budget value per active category.
-
-### Rule 2
-
-Inactive categories excluded from future planning.
-
-### Rule 3
-
-Financial year aware.
+Not applicable in Version 1.
 
 ---
 
 # Budget Spent Calculation
 
-Calculates completed expense transactions grouped by category.
-
----
-
-## Rules
-
-Completed expenses only.
-
-Transfers excluded.
-
-Goal contributions excluded.
-
-Investments excluded.
+Not applicable in Version 1.
 
 ---
 
 # Budget Remaining Calculation
 
-Budget Remaining = Budget Allocation − Budget Spent.
-
----
-
-## Rules
-
-Minimum remaining value may become negative.
-
-Negative values indicate overspending.
+Not applicable in Version 1.
 
 ---
 
 # Budget Utilization Calculation
 
-Measures percentage of allocated budget consumed.
-
----
-
-## Rules
-
-Budget Utilization = Budget Spent ÷ Budget Allocation × 100.
-
-Displayed as percentage.
+Not applicable in Version 1.
 
 ---
 
 # Budget Overspending Calculation
 
-Calculates amount spent above allocated budget.
-
----
-
-## Rules
-
-Only categories exceeding budget produce positive overspend values.
-
-Dashboard highlights overspending separately.
+Not applicable in Version 1.
 
 ---
 
@@ -2148,7 +2075,7 @@ Analysis Engine provides interpretation.
 | Debt Burden Input           | Health Score component |
 | Cash Flow Stability Input   | Health Score component |
 | Goal Progress Input         | Health Score component |
-| Investment Allocation Input | Health Score component |
+| Asset Allocation Input      | Health Score component |
 
 ---
 
@@ -2222,9 +2149,9 @@ Outputs reusable aggregate metrics.
 
 ---
 
-# Investment Allocation Input
+# Asset Allocation Input
 
-Measures distribution of investment value.
+Measures distribution of asset value.
 
 ---
 
@@ -2251,7 +2178,7 @@ The Forecast Engine creates reusable monthly projections.
 
 ---
 
-# Business Engine Responsibilities (Forecast, Budget & Health Inputs)
+# Business Engine Responsibilities (Forecast & Health Inputs)
 
 Business Engine owns:
 
@@ -2261,13 +2188,6 @@ Business Engine owns:
 * Overdue commitments.
 * Commitment totals.
 * Commitment schedule.
-
-### Budget
-
-* Budget spent.
-* Remaining budget.
-* Budget utilization.
-* Overspending totals.
 
 ### Forecast
 
@@ -2282,7 +2202,7 @@ Business Engine owns:
 * Debt Burden Input.
 * Emergency Coverage Input.
 * Goal Progress Input.
-* Investment Allocation Input.
+* Asset Allocation Input.
 
 These outputs become the foundation for the Analysis Engine.
 
@@ -2293,7 +2213,7 @@ These outputs become the foundation for the Analysis Engine.
 The following rules are frozen.
 
 * Forecast Engine performs deterministic projections only.
-* Budget Engine measures planned vs actual spending only.
+* Budget Engine is not included in Version 1.
 * Recurring Commitment Engine owns scheduling calculations.
 * Business Engine provides Health Score inputs only.
 * Analysis Engine owns final scoring and interpretation.
@@ -2303,7 +2223,7 @@ The following rules are frozen.
 
 # Part D Complete
 
-This section freezes the Recurring Commitment Engine, Budget Engine, Forecast Engine, Financial Health Input Engine, reusable outputs, and ownership rules.
+This section freezes the Recurring Commitment Engine, Forecast Engine, Financial Health Input Engine, reusable outputs, and ownership rules.
 
 Part E completes DOC-010 with the dependency matrix, worksheet protection rules, performance architecture, Cursor implementation rules, and Version 1 Business Engine freeze.
 
@@ -2363,7 +2283,7 @@ Presentation layers never become calculation inputs.
 | Recurring Commitments | Scheduled obligations |
 | Transactions | Financial activity ledger |
 | Goals | Goal targets and priorities |
-| Helpers | Validation outputs and lookup lists |
+| Helpers | Validation lists, lookup outputs, named ranges, and intermediate helper outputs |
 
 Business Engine consumes only upstream worksheets.
 
@@ -2452,7 +2372,7 @@ Contains:
 - Appreciation
 - Depreciation
 - Asset Allocation
-- Investment Contributions
+- Asset Contributions
 
 ---
 
@@ -2469,13 +2389,7 @@ Contains:
 
 ## Section 7 — Budget Engine
 
-Contains:
-
-- Budget Allocation
-- Budget Spent
-- Budget Remaining
-- Budget Utilization
-- Overspending Totals
+Not included in Version 1.
 
 ---
 
@@ -2503,7 +2417,7 @@ Includes:
 - Debt Burden
 - Goal Progress
 - Cash Flow Stability
-- Investment Allocation
+- Asset Allocation
 
 ---
 
@@ -2524,7 +2438,6 @@ Every financial metric belongs to one calculation section.
 | Asset Appreciation | Asset Engine |
 | Outstanding Debt | Liability Engine |
 | EMI Burden | Liability Engine |
-| Budget Utilization | Budget Engine |
 | Closing Balance Forecast | Forecast Engine |
 | Savings Rate Input | Health Input Engine |
 | Emergency Coverage Input | Health Input Engine |
@@ -2811,7 +2724,6 @@ Each Business Engine module becomes one future service.
 | Goal Engine | goalService |
 | Asset Engine | assetService |
 | Liability Engine | liabilityService |
-| Budget Engine | budgetService |
 | Forecast Engine | forecastService |
 | Health Input Engine | healthInputService |
 
@@ -2841,7 +2753,6 @@ Excel Version 1 remains the canonical implementation.
 | Goal Progress | Calculated only in Business Engine. |
 | Asset Valuation | Calculated only in Business Engine. |
 | Liability Totals | Calculated only in Business Engine. |
-| Budget Metrics | Calculated only in Business Engine. |
 | Forecast Metrics | Calculated only in Business Engine. |
 | Health Inputs | Produced only in Business Engine. |
 | Dashboard | Never recalculates Business Engine outputs. |
@@ -2868,7 +2779,6 @@ The following Business Engine architecture decisions are permanently frozen.
 - Goal Engine.
 - Asset Engine.
 - Liability Engine.
-- Budget Engine.
 - Forecast Engine.
 - Health Input Engine.
 

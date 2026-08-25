@@ -85,7 +85,7 @@ This structure is reused across Dashboard, Excel, Web App, Mobile App, and Notif
 
 # Insight Categories (Frozen)
 
-FinanceOS Version 1 supports exactly ten insight categories.
+FinanceOS Version 1 supports exactly nine insight categories.
 
 | Category | Purpose |
 |----------|---------|
@@ -95,8 +95,7 @@ FinanceOS Version 1 supports exactly ten insight categories.
 | Income | Income trends and consistency. |
 | Goals | Goal progress and delays. |
 | Liabilities | Debt burden and EMI analysis. |
-| Investments | Asset allocation and appreciation. |
-| Budget | Budget utilization and overspending. |
+| Assets | Asset allocation and appreciation. |
 | Cash Runway | Emergency reserve and survival months. |
 | Purchase Decisions | Affordability analysis. |
 
@@ -270,13 +269,13 @@ Liability insights explain debt behaviour.
 
 ---
 
-# Investment Insights
+# Asset Insights
 
-Investment insights explain asset growth.
+Asset insights explain asset growth.
 
 ## Trigger Types
 
-- Investment allocation changed.
+- Asset allocation changed.
 - Asset appreciation increased.
 - Portfolio value increased.
 - Portfolio value decreased.
@@ -287,7 +286,7 @@ Investment insights explain asset growth.
 
 - Gold value increased this month.
 - Mutual fund allocation grew.
-- Investment value reached a new high.
+- Asset value reached a new high.
 
 ---
 
@@ -296,37 +295,38 @@ Investment insights explain asset growth.
 - Total Asset Value.
 - Appreciation.
 - Allocation Percentage.
-- Investment Contributions.
+- Asset Contributions.
 
 ---
 
-# Budget Insights
+# Spending Analysis Insights
 
-Budget insights explain spending discipline.
+Spending Analysis insights explain spending behaviour.
+
+Version 1 does not include Budget Insights, Budget Utilization, or Remaining Budget.
 
 ## Trigger Types
 
-- Budget exceeded.
-- Budget nearly exhausted.
-- Budget under control.
 - Category overspending detected.
+- Spending increased versus last month.
+- Spending decreased versus last month.
+- Spending concentrated in few categories.
 
 ---
 
 ## Example Headlines
 
-- Dining budget exceeded this month.
-- Travel spending remains within budget.
-- Shopping budget has 18% remaining.
+- Dining spending increased this month.
+- Travel spending remains below last month.
+- Shopping is a larger share of expenses this month.
 
 ---
 
 ## Supporting Metrics
 
-- Budget Allocation.
-- Budget Spent.
-- Remaining Budget.
-- Utilization Percentage.
+- Category Spend.
+- Monthly Spend.
+- Spending Distribution.
 
 ---
 
@@ -426,7 +426,7 @@ The following Insight architecture decisions are frozen.
 - Analysis Engine determines triggers.
 - Insights generate human-readable explanations.
 - Every insight has a stable structure.
-- Exactly ten insight categories exist in Version 1.
+- Exactly nine insight categories exist in Version 1.
 
 ---
 
@@ -572,7 +572,7 @@ Notifications are deterministic triggers.
 | Goals | Goal completed. |
 | Goals | Monthly contribution skipped. |
 | Liabilities | EMI due in 3 days. |
-| Budget | Budget exceeded. |
+| Spending | Category spending increased. |
 | Cash Runway | Emergency runway below target. |
 | Purchase | Purchase becomes affordable. |
 | Financial Health | Health score improved. |
@@ -606,7 +606,7 @@ Emails are generated from Insights outputs.
 | Weekly Financial Summary | Weekly spending and savings recap. |
 | Monthly Financial Report | Complete monthly financial report. |
 | Goal Progress Report | Goal progress update. |
-| Budget Alert | Budget exceeded notification. |
+| Spending Alert | Category spending increased. |
 | Cash Runway Alert | Emergency runway warning. |
 | Financial Health Report | Health score summary. |
 
@@ -622,7 +622,7 @@ Every monthly report contains:
 4. Savings Summary.
 5. Goal Progress.
 6. Debt Summary.
-7. Investment Summary.
+7. Asset Summary.
 8. Top Insights.
 9. Recommended Focus Areas.
 
@@ -670,7 +670,7 @@ Insights automatically resolve when trigger conditions disappear.
 
 | Active Trigger | Resolution Trigger |
 |---------------|--------------------|
-| Budget exceeded | Spending returns within budget. |
+| Spending increased | Spending returns toward typical range. |
 | Emergency runway below target | Runway reaches target. |
 | Goal delayed | Contribution pace improves. |
 | Debt burden high | EMI burden decreases. |
@@ -736,7 +736,7 @@ Sections include:
 - Goals
 - Spending
 - Cash Runway
-- Investments
+- Assets
 - Debt
 - Financial Health
 

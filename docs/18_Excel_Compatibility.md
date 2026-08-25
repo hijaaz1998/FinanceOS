@@ -278,7 +278,7 @@ Conditional formatting communicates financial meaning only.
 ## Approved Uses
 
 - Goal progress.
-- Budget utilization.
+- Spending analysis.
 - Debt warning.
 - Health indicators.
 - Runway status.

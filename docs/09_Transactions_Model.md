@@ -30,7 +30,7 @@ This document freezes:
 - Validation behavior.
 - Goal contributions.
 - Liability payments.
-- Investment purchases.
+- Asset purchases.
 - Historical integrity rules.
 
 The Transactions worksheet is the single source of truth for historical financial activity.
@@ -121,7 +121,7 @@ Business Engine determines:
 - Account balance impact.
 - Goal impact.
 - Liability impact.
-- Investment impact.
+- Asset impact.
 - Dashboard metrics.
 - Analysis metrics.
 
@@ -241,6 +241,10 @@ No additional transaction types exist in Version 1.
 
 These four transaction types are immutable for Version 1.
 
+Goal Contribution, Liability Payment, and Asset Purchase are **not** Transaction Types.
+
+They are Destination Type behaviors defined in this document and in DOC-008.
+
 ---
 
 ## Transaction Type 1 — Income
@@ -321,7 +325,6 @@ Expense transactions:
 Expense contributes to:
 
 - Monthly Expense.
-- Budget Usage.
 - Spending Breakdown.
 - Cash Flow.
 
@@ -415,7 +418,7 @@ This architecture powers dynamic validation.
 | Account | Accounts |
 | Goal | Goals |
 | Liability | Liabilities |
-| Investment | Assets |
+| Asset | Assets (`tblAssets`) |
 | Other | Free Text Placeholder |
 
 Destination Type controls dropdown behavior.
@@ -494,11 +497,11 @@ Examples:
 
 ---
 
-## Investment Destination
+## Asset Destination
 
-Destination Type = Investment.
+Destination Type = Asset.
 
-Destination Name references an asset.
+Destination Name references an asset in `tblAssets`.
 
 Examples:
 
@@ -507,7 +510,7 @@ Examples:
 - Mutual Fund
 - Stocks
 
-Cash converts into investment value.
+Cash converts into asset value.
 
 ---
 
@@ -523,15 +526,17 @@ Version 1 minimizes usage of free-text destinations.
 
 This table freezes movement behavior.
 
-| Transaction Type | Source Account | Destination | Cash Changes | Net Worth Changes |
-|------------------|---------------|------------|--------------|-------------------|
-| Income | Yes | Income Category | Increase | Increase |
-| Expense | Yes | Expense Category | Decrease | Decrease |
-| Transfer | Yes | Account | No Overall Change | No Change |
-| Goal Contribution | Yes | Goal | Decrease Cash | No Change |
-| Liability Payment | Yes | Liability | Decrease Cash | Liability Reduces |
-| Investment Purchase | Yes | Investment Asset | Decrease Cash | Asset Increases |
-| Adjustment | Yes | Adjustment | Depends | Depends |
+The first column is Transaction Type. Goal contributions, liability payments, and asset purchases use one of the four Transaction Types plus Destination Type.
+
+| Transaction Type | Destination Type | Source Account | Destination | Cash Changes | Net Worth Changes |
+|------------------|------------------|----------------|-------------|----------------|-------------------|
+| Income | Income Category | Yes | Income Category | Increase | Increase |
+| Expense | Expense Category | Yes | Expense Category | Decrease | Decrease |
+| Expense | Goal | Yes | Goal | Decrease Cash | No Change |
+| Expense | Liability | Yes | Liability | Decrease Cash | Liability Reduces |
+| Expense | Asset | Yes | Asset (`tblAssets`) | Decrease Cash | Asset Increases |
+| Transfer | Account | Yes | Account | No Overall Change | No Change |
+| Adjustment | Adjustment | Yes | Adjustment | Depends | Depends |
 
 This matrix is frozen for Version 1.
 
@@ -594,7 +599,7 @@ The following are frozen:
 - Transfers never count as spending.
 - Goal contributions move cash into goals.
 - Liability payments reduce debt obligations.
-- Investment purchases convert cash into assets.
+- Asset purchases convert cash into assets.
 
 ---
 
@@ -641,12 +646,17 @@ Some fields become mandatory depending on the transaction type.
 | Transaction Type | Required Additional Fields |
 |------------------|----------------------------|
 | Income | Income Category, Income Source (optional but recommended). |
-| Expense | Expense Category. |
+| Expense | Expense Category, or Destination Type Goal / Liability / Asset as required. |
 | Transfer | Destination Account. |
-| Goal Contribution | Goal Destination. |
-| Liability Payment | Liability Destination. |
-| Investment Purchase | Investment Destination. |
 | Adjustment | Notes explaining the adjustment. |
+
+Destination Type Goal, Liability, or Asset is **not** a Transaction Type.
+
+| Destination Type | Required Additional Fields |
+|------------------|----------------------------|
+| Goal | Goal Destination (tblGoals). |
+| Liability | Liability Destination (tblLiabilities). |
+| Asset | Asset Destination (tblAssets). |
 
 Conditional validation is deterministic.
 
@@ -667,7 +677,7 @@ It changes based on Destination Type.
 | Account | Active Accounts |
 | Goal | Active Goals |
 | Liability | Active Liabilities |
-| Investment | Active Assets |
+| Asset | Active Assets (`tblAssets`) |
 | Other | Free Text (optional) |
 
 Helpers produces every validation list dynamically.
@@ -784,7 +794,7 @@ Examples:
 |------------------|-----------------|
 | Goal | Emergency Fund |
 | Liability | Education Loan |
-| Investment | Gold |
+| Asset | Gold |
 | Expense Category | Food & Dining |
 
 ---
@@ -907,12 +917,16 @@ The following rules are frozen.
 
 This section freezes validation behavior, transaction relationships, and historical integrity.
 
-Part D defines Goal Contributions, Liability Payments, Investment Purchases, and Transfer behavior.
+Part D defines Goal Contributions, Liability Payments, Asset Purchases, and Transfer behavior.
 
 
 ---
 
 # Goal Contribution Transaction Model (Frozen)
+
+Goal Contributions are **not** a Transaction Type.
+
+They use one of the four Transaction Types with Destination Type = Goal.
 
 Goal Contributions represent intentional savings transfers from available cash into a financial goal.
 
@@ -1052,6 +1066,10 @@ Analysis Engine calculates:
 
 # Liability Payment Transaction Model (Frozen)
 
+Liability Payments are **not** a Transaction Type.
+
+They use one of the four Transaction Types with Destination Type = Liability.
+
 Liability payments reduce outstanding debt.
 
 Transactions record payment history.
@@ -1154,9 +1172,13 @@ Analysis Engine calculates:
 
 ---
 
-# Investment Purchase Transaction Model (Frozen)
+# Asset Purchase Transaction Model (Frozen)
 
-Investment purchases convert cash into owned assets.
+Asset Purchases are **not** a Transaction Type.
+
+They use one of the four Transaction Types with Destination Type = Asset.
+
+Asset purchases convert cash into owned assets.
 
 Transactions record purchases.
 
@@ -1164,17 +1186,17 @@ Assets record ownership.
 
 ---
 
-## Investment Philosophy
+## Asset Philosophy
 
-Investment purchases are not expenses.
+Asset purchases are not spending.
 
 They convert one owned resource into another.
 
-Cash becomes investment value.
+Cash becomes asset value.
 
 ---
 
-## Investment Flow
+## Asset Flow
 
 Account
 
@@ -1196,11 +1218,11 @@ Dashboard
 
 ---
 
-## Investment Purchase Rules
+## Asset Purchase Rules
 
-### Rule 1 — Destination Type = Investment
+### Rule 1 — Destination Type = Asset
 
-Destination references an asset.
+Destination Name references an existing asset in `tblAssets`.
 
 ### Rule 2 — Source Account Required
 
@@ -1208,7 +1230,7 @@ Cash leaves one funding account.
 
 ### Rule 3 — Asset Must Exist
 
-Investment references an existing asset record.
+The destination must be an existing asset record.
 
 ### Rule 4 — Purchase Does Not Reduce Net Worth
 
@@ -1224,9 +1246,9 @@ Only Current Value changes Net Worth.
 
 ---
 
-## Investment Examples
+## Asset Examples
 
-| Source Account | Investment | Amount |
+| Source Account | Asset | Amount |
 |---------------|------------|-------:|
 | HDFC Salary | Gold | ₹10,000 |
 | SBI Savings | Mutual Fund SIP | ₹5,000 |
@@ -1234,18 +1256,18 @@ Only Current Value changes Net Worth.
 
 ---
 
-## Investment Analytics
+## Asset Analytics
 
 Business Engine calculates:
 
-- Investment Allocation.
-- Total Investment Value.
-- Investment Contributions.
+- Asset Allocation.
+- Total Asset Value.
+- Asset Contributions.
 
 Analysis Engine calculates:
 
 - Allocation Distribution.
-- Investment Momentum.
+- Asset Momentum.
 
 ---
 
@@ -1431,7 +1453,7 @@ Business Engine owns:
 - Account Balance Updates.
 - Cash Flow Aggregation.
 - Goal Contribution Totals.
-- Investment Contribution Totals.
+- Asset Contribution Totals.
 - Liability Payment Totals.
 - Income Totals.
 - Expense Totals.
@@ -1447,7 +1469,7 @@ Analysis Engine owns:
 - Payment Method Distribution.
 - Goal Contribution Momentum.
 - Liability Payment Progress.
-- Investment Contribution Trends.
+- Asset Contribution Trends.
 
 ---
 
@@ -1457,7 +1479,7 @@ The following rules are frozen.
 
 - Goal contributions are transactions.
 - Liability payments are transactions.
-- Investment purchases are transactions.
+- Asset purchases are transactions.
 - Transfers preserve total cash.
 - Income Sources classify origin only.
 - Payment Method is informational.
@@ -1466,7 +1488,7 @@ The following rules are frozen.
 
 # Part D Complete
 
-This section freezes Goal Contributions, Liability Payments, Investment Purchases, Transfer behavior, Income Sources, and Payment Method architecture.
+This section freezes Goal Contributions, Liability Payments, Asset Purchases, Transfer behavior, Income Sources, and Payment Method architecture.
 
 Part E finalizes edge cases, historical integrity, transaction status behavior, reconciliation rules, and the immutable transaction model matrix.
 
@@ -1518,7 +1540,7 @@ Completed represents real financial activity.
 - Included in Insights.
 - Updates Account Balances.
 - Updates Goal Progress.
-- Updates Investment Totals.
+- Updates Asset Totals.
 - Updates Liability Payment Totals.
 
 Completed is the default operational state.
@@ -1859,7 +1881,7 @@ Business Engine owns every financial calculation derived from transactions.
 - Savings.
 - Account Balances.
 - Goal Contributions.
-- Investment Contributions.
+- Asset Contributions.
 - Liability Payments.
 - Net Worth Inputs.
 
@@ -1931,9 +1953,9 @@ Every insight references deterministic metrics.
 | Rent Payment | Yes | Expense |
 | EMI Payment | Yes | Liability Destination |
 | Credit Card Payment | Yes | Liability Destination |
-| Goal Contribution | Yes | Goal Destination |
-| SIP Purchase | Yes | Investment Destination |
-| Gold Purchase | Yes | Investment Destination |
+| Goal Contribution | Yes | Expense + Goal Destination |
+| SIP Purchase | Yes | Expense + Asset Destination (`tblAssets`) |
+| Gold Purchase | Yes | Expense + Asset Destination (`tblAssets`) |
 | Cash Withdrawal | Yes | Transfer |
 | Bank Transfer | Yes | Transfer |
 | Refund Received | Yes | Income |
@@ -1968,7 +1990,7 @@ The following transaction decisions are immutable for FinanceOS Version 1.
 - Transfers never affect income or expenses.
 - Goal contributions increase savings progress.
 - Liability payments reduce debt obligations.
-- Investment purchases convert cash into assets.
+- Asset purchases convert cash into assets.
 - Refunds and cashback are separate income events.
 
 ### Engine Responsibilities

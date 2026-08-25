@@ -418,7 +418,6 @@ Categories classify financial transactions.
 Categories are shared across:
 
 * Transactions.
-* Budgets.
 * Dashboard.
 * Insights.
 * Analysis Engine.
@@ -1239,7 +1238,7 @@ Recurring commitments can originate from:
 * Goal Contribution
 * Savings Transfer
 * Membership
-* Investment Contribution
+* Asset Contribution
 * Other Commitment
 
 ---
@@ -1399,7 +1398,7 @@ This worksheet becomes the source of truth for:
 * Account Balances
 * Goal Contributions
 * Liability Payments
-* Investment Purchases
+* Asset Purchases
 * Dashboard KPIs
 * Financial Insights
 * Forecasting & Simulations
@@ -1457,7 +1456,7 @@ No additional transaction types exist in Version 1.
 | Type       | Source Account  | Destination                                      |
 | ---------- | --------------- | ------------------------------------------------ |
 | Income     | External Source | User Account                                     |
-| Expense    | User Account    | Expense Category / Goal / Liability / Investment |
+| Expense    | User Account    | Expense Category / Goal / Liability / Asset |
 | Transfer   | User Account    | User Account                                     |
 | Adjustment | User Account    | User Account (manual correction)                 |
 
@@ -1476,7 +1475,7 @@ Destination Type controls which entity receives the transaction.
 | Account          | Accounts                       |
 | Goal             | Goals                          |
 | Liability        | Liabilities                    |
-| Investment       | Assets                         |
+| Asset            | Assets (`tblAssets`)           |
 | Other            | Reserved free-text destination |
 
 This architecture powers dynamic dropdown validation.
@@ -1654,15 +1653,17 @@ Business Engine measures debt repayment.
 
 ---
 
-## Investment Purchase
+## Asset Purchase
 
 Destination Type:
 
-Investment
+Asset
 
 Destination Name:
 
 Gold, Mutual Fund, SIP, Stock, Fixed Deposit.
+
+Destination Name references `tblAssets`.
 
 Cash decreases.
 
@@ -1735,7 +1736,7 @@ Goal → Active Goals
 
 Liability → Active Liabilities
 
-Investment → Active Assets
+Asset → Active Assets
 
 This logic is owned entirely by Helpers.
 
@@ -1771,7 +1772,7 @@ Outstanding Balance is maintained separately.
 
 ---
 
-## Rule 5 — Investment Purchases Convert Cash Into Assets
+## Rule 5 — Asset Purchases Convert Cash Into Assets
 
 Cash decreases.
 
@@ -2468,14 +2469,14 @@ Updates every account automatically.
 Calculates:
 
 * Total Asset Value.
-* Investment Value.
+* Investment Category Value.
 * Property Value.
 * Physical Asset Value.
 * Retirement Asset Value.
 * Appreciation Amount.
 * Appreciation Percentage.
 
-Outputs investment allocation.
+Outputs asset allocation.
 
 ---
 
@@ -2536,19 +2537,17 @@ Outputs:
 
 ---
 
-## Module 8 — Budget Engine
+## Module 8 — Spending Analysis
 
-Calculates spending summaries.
+Calculates spending summaries from Cash Flow.
 
 Outputs:
 
 * Category Spend.
 * Monthly Spend.
-* Remaining Budget.
-* Overspending Categories.
-* Budget Utilization %.
+* Spending Distribution.
 
-Version 1 budget calculations remain deterministic.
+Version 1 does not include a Budget Engine, Remaining Budget, or Budget Utilization.
 
 ---
 
@@ -2563,7 +2562,7 @@ Version 1 budget calculations remain deterministic.
 | Goals       | Dashboard, Insights        |
 | Commitments | Dashboard, Forecast        |
 | Net Worth   | Dashboard, Insights        |
-| Budget      | Dashboard, Insights        |
+| Spending    | Dashboard, Insights        |
 
 ---
 
@@ -2658,7 +2657,7 @@ Calculates:
 * Debt Score.
 * Emergency Fund Score.
 * Cash Flow Score.
-* Investment Score.
+* Asset Score.
 
 Outputs 0–100 score.
 
@@ -2785,7 +2784,7 @@ Calculates:
 * Net Worth Momentum.
 * Spending Momentum.
 * Debt Momentum.
-* Investment Momentum.
+* Asset Momentum.
 
 Trend-based deterministic metrics.
 
@@ -3013,14 +3012,14 @@ Includes quick warning badges.
 
 ---
 
-## Section 6 — Investment & Asset Card
+## Section 6 — Assets Card
 
 Displays asset allocation.
 
 ### Components
 
 * Total Asset Value
-* Investment Allocation
+* Asset Allocation
 * Gold Allocation
 * Property Allocation
 * Retirement Assets
@@ -3054,7 +3053,7 @@ Displays overall financial health.
 * Emergency Fund Status
 * Savings Momentum
 * Debt Health
-* Investment Health
+* Asset Health
 
 Score displayed from 0–100.
 
@@ -3178,6 +3177,18 @@ Insights never modify financial records.
 
 # Insight Categories (Frozen)
 
+Version 1 supports exactly nine insight categories:
+
+* Financial Health
+* Cash Flow
+* Spending
+* Income
+* Goals
+* Liabilities
+* Assets
+* Cash Runway
+* Purchase Decisions
+
 ## Financial Health Insights
 
 Examples:
@@ -3185,6 +3196,8 @@ Examples:
 * Savings rate improved.
 * Emergency fund below recommendation.
 * Financial Health Score increased.
+* Savings momentum improving.
+* Net worth growing consistently.
 
 ---
 
@@ -3195,26 +3208,7 @@ Examples:
 * Monthly expenses exceeded income.
 * Largest spending category this month.
 * Fixed commitments increased.
-
----
-
-## Goal Insights
-
-Examples:
-
-* Bike Goal will complete 2 months early.
-* Emergency Fund contribution is behind schedule.
-* Home Goal funding gap increased.
-
----
-
-## Liability Insights
-
-Examples:
-
-* EMI burden exceeds recommended threshold.
-* Credit card balance increasing.
-* Debt payoff improving consistently.
+* You have discretionary cash remaining.
 
 ---
 
@@ -3225,36 +3219,52 @@ Examples:
 * Food spending is 18% above average.
 * Subscription spending increased this month.
 * Shopping exceeded monthly average.
+* Spending momentum declining.
 
 ---
 
-## Opportunity Insights
-
-Positive recommendations.
+## Income Insights
 
 Examples:
 
-* You can safely save ₹3,000 more this month.
-* You have discretionary cash remaining.
+* Income is consistent this month.
+* Income declined compared with last month.
+* Income source concentration increased.
+
+---
+
+## Goals Insights
+
+Examples:
+
+* Bike Goal will complete 2 months early.
+* Emergency Fund contribution is behind schedule.
+* Home Goal funding gap increased.
 * You can complete your goal earlier by increasing savings.
 
 ---
 
-## Purchase Insights
-
-Generated from Purchase Affordability Engine.
+## Liabilities Insights
 
 Examples:
 
-* Safe Purchase
-* Purchase Delays Goal
-* Purchase Reduces Emergency Fund
-
-Always includes reasoning.
+* EMI burden exceeds recommended threshold.
+* Credit card balance increasing.
+* Debt payoff improving consistently.
 
 ---
 
-## Survival Prediction Insights
+## Assets Insights
+
+Examples:
+
+* Total asset value increased this month.
+* Asset allocation changed.
+* Gold value increased this month.
+
+---
+
+## Cash Runway Insights
 
 Generated from Survival Prediction Engine.
 
@@ -3268,13 +3278,17 @@ This is a flagship FinanceOS insight category.
 
 ---
 
-## Financial Momentum Insights
+## Purchase Decisions Insights
+
+Generated from Purchase Affordability Engine.
 
 Examples:
 
-* Savings momentum improving.
-* Spending momentum declining.
-* Net worth growing consistently.
+* Safe Purchase
+* Purchase Delays Goal
+* Purchase Reduces Emergency Fund
+
+Always includes reasoning.
 
 ---
 

@@ -214,7 +214,7 @@ The Business Engine performs deterministic financial calculations.
 - Net Worth.
 - Goal Progress.
 - Budget Summary.
-- Investment Summary.
+- Asset Summary.
 - Liability Summary.
 - Monthly Commitments.
 

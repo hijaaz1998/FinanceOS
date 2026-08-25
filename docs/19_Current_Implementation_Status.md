@@ -110,7 +110,7 @@ Dashboard includes:
 - Cash Flow Summary.
 - Goal Progress.
 - Liability Summary.
-- Investment Summary.
+- Asset Summary.
 - Financial Health.
 - Insights Preview.
 - Quick Actions.
@@ -127,8 +127,7 @@ Business Engine includes deterministic calculations for:
 - Net Worth.
 - Account Balances.
 - Goal Progress.
-- Budget Summary.
-- Investments.
+- Asset Summary.
 - Debt Summary.
 - Monthly Commitments.
 
@@ -163,13 +162,17 @@ Version 1 includes deterministic financial insights.
 
 ### Insight Categories
 
+Version 1 supports exactly nine insight categories.
+
 - Financial Health.
 - Cash Flow.
+- Spending.
+- Income.
 - Goals.
 - Liabilities.
-- Spending.
-- Purchase Decisions.
+- Assets.
 - Cash Runway.
+- Purchase Decisions.
 
 Insights explain financial metrics using documented business rules.
 
@@ -430,7 +433,7 @@ Cursor migration is an implementation milestone.
 | Stage | Status |
 |--------|--------|
 | Repository Created | Complete |
-| Documentation Freeze | In Progress |
+| Documentation Freeze | Complete |
 | Workbook Implementation | Pending |
 | UI Implementation | Pending |
 | Formula Implementation | Pending |

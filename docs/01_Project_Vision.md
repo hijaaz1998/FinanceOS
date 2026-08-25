@@ -446,6 +446,7 @@ These products solve different problems.
 
 * Accounts.
 * Income Sources.
+* Assets.
 * Transactions.
 * Categories.
 * Liabilities.

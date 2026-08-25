@@ -213,8 +213,7 @@ Reusable Business Engine calculations use the `out` prefix.
 | outTotalCash | Total cash position |
 | outNetWorth | Current net worth |
 | outOutstandingDebt | Outstanding liabilities |
-| outInvestmentValue | Total investments |
-| outBudgetUtilization | Budget utilization |
+| outAssetValue | Total asset value |
 | outGoalCompletion | Goal completion percentage |
 
 Outputs become reusable workbook APIs.
