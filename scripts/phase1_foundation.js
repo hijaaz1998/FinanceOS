@@ -12,6 +12,8 @@ const TABLE_STYLE = {
 };
 
 const USER_PROTECT = {
+  // ExcelJS option names = "user may …" (see README).
+  // XML is corrected after write because ExcelJS emits inverted allow flags.
   selectLockedCells: true,
   selectUnlockedCells: true,
   formatCells: false,
@@ -28,11 +30,19 @@ const USER_PROTECT = {
 };
 
 const ENGINE_PROTECT = {
-  ...USER_PROTECT,
+  selectLockedCells: true,
+  selectUnlockedCells: true,
+  formatCells: false,
+  formatColumns: false,
+  formatRows: false,
   insertRows: false,
+  insertColumns: false,
+  insertHyperlinks: false,
   deleteRows: false,
+  deleteColumns: false,
   sort: false,
   autoFilter: false,
+  pivotTables: false,
 };
 
 const ENTITY_TABLES = [
@@ -262,15 +272,32 @@ function freezeHeader(ws) {
 function addEntityTable(ws, spec) {
   const headers = spec.columns;
   const lastCol = colLetter(headers.length);
+  const emptyRow = headers.map(() => null);
+  // Excel requires a data row in the table ref; empty cells only (no sample data).
   ws.addTable({
     name: spec.table,
-    ref: `A1:${lastCol}1`,
+    ref: `A1:${lastCol}2`,
     headerRow: true,
     totalsRow: false,
     style: TABLE_STYLE,
     columns: headers.map((name) => ({ name, filterButton: true })),
-    rows: [],
+    rows: [emptyRow],
   });
+
+  // Header row always locked. Data-body input cells unlocked so protected sheets remain editable.
+  // Pre-style many body rows so newly inserted table rows inherit unlocked input cells.
+  const unlockRows = 200;
+  for (let r = 1; r <= unlockRows; r += 1) {
+    headers.forEach((name, i) => {
+      const cell = ws.getCell(r, i + 1);
+      const isHeader = r === 1;
+      const isLockedCol = spec.locked.includes(name);
+      cell.protection = {
+        locked: isHeader || isLockedCol,
+        hidden: false,
+      };
+    });
+  }
   freezeHeader(ws);
 }
 
@@ -518,11 +545,91 @@ async function main() {
   }
 
   await wb.xlsx.writeFile(OUT);
+  patchProtectionXml(OUT);
   console.log("Wrote", OUT);
   console.log(
     "Sheets",
     wb.worksheets.map((s) => `${s.name}:${s.state}`).join(" | ")
   );
+}
+
+function patchProtectionXml(xlsxPath) {
+  const fs = require("fs");
+  const os = require("os");
+  const { execFileSync } = require("child_process");
+
+  const userProt =
+    '<sheetProtection sheet="1" objects="1" scenarios="1" formatCells="0" formatColumns="0" formatRows="0" insertColumns="0" insertRows="1" insertHyperlinks="0" deleteColumns="0" deleteRows="1" sort="1" autoFilter="1" pivotTables="0"/>';
+  const engineProt =
+    '<sheetProtection sheet="1" objects="1" scenarios="1" formatCells="0" formatColumns="0" formatRows="0" insertColumns="0" insertRows="0" insertHyperlinks="0" deleteColumns="0" deleteRows="0" sort="0" autoFilter="0" pivotTables="0"/>';
+
+  // Sheet order in workbook: 1 Settings … 10 Helpers, 11 Business Engine, 12 Analysis Engine, 13 Dashboard, 14 Insights
+  const engineSheetNums = new Set([10, 11, 12, 13, 14]);
+
+  const ps = `
+Add-Type -AssemblyName System.IO.Compression
+Add-Type -AssemblyName System.IO.Compression.FileSystem
+$xlsx = '${xlsxPath.replace(/'/g, "''")}'
+$zip = [System.IO.Compression.ZipFile]::Open($xlsx, [System.IO.Compression.ZipArchiveMode]::Update)
+
+function Get-Text([string]$name) {
+  $e = $zip.GetEntry($name)
+  $sr = New-Object System.IO.StreamReader($e.Open())
+  $t = $sr.ReadToEnd(); $sr.Close(); return $t
+}
+function Set-Text([string]$name, [string]$text) {
+  $old = $zip.GetEntry($name)
+  if ($old) { $old.Delete() }
+  $new = $zip.CreateEntry($name)
+  $sw = New-Object System.IO.StreamWriter($new.Open())
+  $sw.Write($text); $sw.Flush(); $sw.Close()
+}
+
+1..14 | ForEach-Object {
+  $n = $_
+  $path = "xl/worksheets/sheet$n.xml"
+  $xml = Get-Text $path
+  $prot = if (@(10,11,12,13,14) -contains $n) { '${engineProt}' } else { '${userProt}' }
+  if ($xml -match '<sheetProtection[^/]*/>') {
+    $xml = [regex]::Replace($xml, '<sheetProtection[^/]*/>', $prot)
+  } elseif ($xml -match '<sheetData>') {
+    $xml = $xml.Replace('<sheetData>', $prot + '<sheetData>')
+  }
+  # keep totalsRowShown=0
+  Set-Text $path $xml
+}
+
+# Fix table totals flags
+$files = @($zip.Entries | Where-Object { $_.FullName -like 'xl/tables/table*.xml' } | ForEach-Object { $_.FullName })
+foreach ($name in $files) {
+  $xml = Get-Text $name
+  $xml = $xml -replace 'totalsRowShown="1"', 'totalsRowShown="0"'
+  $xml = $xml -replace ' totalsRowLabel="Total"', ''
+  $xml = $xml -replace ' totalsRowFunction="none"', ''
+  Set-Text $name $xml
+}
+
+# Workbook structure lock (prevent hide/delete/rename/reorder sheets)
+$wb = Get-Text 'xl/workbook.xml'
+$wb = [regex]::Replace($wb, '<workbookProtection[^/]*/>', '')
+if ($wb -notmatch 'workbookProtection') {
+  if ($wb -match '<workbookPr[^/]*/>') {
+    $wb = [regex]::Replace($wb, '(<workbookPr[^/]*/>)', '$1<workbookProtection lockStructure="1"/>')
+  } elseif ($wb -match '<workbookPr[^>]*>.*?</workbookPr>') {
+    $wb = [regex]::Replace($wb, '(</workbookPr>)', '$1<workbookProtection lockStructure="1"/>')
+  } else {
+    $wb = $wb.Replace('<sheets>', '<workbookProtection lockStructure="1"/><sheets>')
+  }
+}
+Set-Text 'xl/workbook.xml' $wb
+$zip.Dispose()
+Write-Output 'protection patched'
+`;
+  const psPath = require("path").join(os.tmpdir(), "fos-patch-protection.ps1");
+  fs.writeFileSync(psPath, ps, "utf8");
+  execFileSync("powershell.exe", ["-NoProfile", "-File", psPath], {
+    stdio: "inherit",
+  });
 }
 
 main().catch((err) => {
