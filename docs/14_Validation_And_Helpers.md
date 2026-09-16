@@ -575,6 +575,8 @@ Filter:
 
 Status = Active
 
+`Include in Dashboard` uses the reusable `rngYesNo` list sourced from `lkpYesNo`.
+
 Output:
 
 `valActiveAccounts`
@@ -800,6 +802,8 @@ Notes required.
 
 Category optional.
 
+Amount must be signed and non-zero.
+
 ---
 
 # Named Range Architecture (Frozen)
@@ -822,6 +826,8 @@ Examples:
 
 - rngActiveAccounts
 - rngActiveGoals
+- rngYesNo
+- rngTransactionStatus
 - rngCurrency
 - rngMonthList
 
@@ -974,7 +980,8 @@ Every validation field follows deterministic rules.
 |-----------------|----------|
 | Required Field | Blank values rejected where mandatory. |
 | Dropdown Only | User selects from validation list. |
-| Positive Number | Amount fields greater than zero. |
+| Positive Number | Non-Adjustment Amount fields greater than zero. |
+| Signed Adjustment | Adjustment Amount may be positive or negative but never zero. |
 | Date Validation | Valid Excel date required. |
 | Active Entity Only | Dropdown excludes inactive entities. |
 | Conditional Validation | Appears only when applicable. |

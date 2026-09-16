@@ -834,11 +834,11 @@ Opening Balance entered once during setup.
 
 ### Rule 2 — Income Increases Balance
 
-Completed income increases Source Account.
+Completed and Reconciled income increases Source Account.
 
 ### Rule 3 — Expense Decreases Balance
 
-Completed expenses reduce Source Account.
+Completed and Reconciled expenses reduce Source Account.
 
 ### Rule 4 — Transfers Move Between Accounts
 
@@ -846,9 +846,15 @@ Source decreases.
 
 Destination increases.
 
+Only Completed and Reconciled transfers affect balances.
+
 ### Rule 5 — Adjustments Modify Balance
 
-Adjustment transactions reconcile balances.
+Completed and Reconciled Adjustment transactions use a signed non-zero Amount applied directly to Source Account.
+
+Positive Adjustment amounts increase balance.
+
+Negative Adjustment amounts decrease balance.
 
 ---
 
@@ -859,6 +865,10 @@ Current Balance is generated.
 Users never edit Current Balance directly.
 
 Business Engine owns this calculation.
+
+The internal Account Engine matrix is stored in the unused `D1:L200` area of the Business Engine worksheet.
+
+`tblAccounts[Current Balance]` reads the corresponding generated balance from this matrix and remains protected.
 
 ---
 
@@ -925,6 +935,8 @@ Only Active accounts participate in:
 * Dashboard summaries.
 
 Closed accounts remain historical only.
+
+Active accounts also require `Include in Dashboard = Yes` to participate in dashboard and account-summary outputs.
 
 ---
 

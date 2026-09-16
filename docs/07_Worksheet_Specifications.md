@@ -559,6 +559,7 @@ Examples include:
 | Opening Balance | Yes      | Yes      | Initial balance entered once.         |
 | Current Balance | No       | No       | Calculated from Business Engine.      |
 | Currency        | Yes      | Yes      | Currency code.                        |
+| Include in Dashboard | Yes | Yes      | Yes / No control for dashboard summaries. |
 | Status          | Yes      | Yes      | Active / Closed.                      |
 | Notes           | No       | Yes      | Optional notes.                       |
 
@@ -605,6 +606,7 @@ Referenced by:
 
 * Opening Balance entered once.
 * Current Balance calculated.
+* Include in Dashboard controls whether an Active account participates in dashboard and account-summary outputs.
 * Closed accounts remain historically visible.
 * Transactions cannot reference closed accounts for new entries.
 
@@ -1494,7 +1496,7 @@ This architecture powers dynamic dropdown validation.
 | Destination Name   | Yes         | Yes      | Dynamic lookup based on Destination Type. |
 | Category           | Conditional | Yes      | Income or Expense category.               |
 | Income Source      | Conditional | Yes      | Income origin (Salary, Freelance, etc.).  |
-| Amount             | Yes         | Yes      | Transaction amount.                       |
+| Amount             | Yes         | Yes      | Positive amount, except signed non-zero Adjustment amounts. |
 | Payment Method     | Yes         | Yes      | Cash, Bank, UPI, Card, Wallet, etc.       |
 | Transaction Status | Yes         | Yes      | Completed / Pending / Cancelled.          |
 | Notes              | No          | Yes      | Optional description.                     |

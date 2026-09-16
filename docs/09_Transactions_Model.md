@@ -396,6 +396,9 @@ Adjustments:
 
 - Require explanation in Notes.
 - Require account selection.
+- Use a signed non-zero Amount applied directly to Source Account.
+- Positive Amount increases Source Account balance.
+- Negative Amount decreases Source Account balance.
 - Never classified as spending.
 - Never classified as income unless specified.
 
@@ -632,7 +635,7 @@ The following fields are mandatory for every transaction.
 | Source Account | Yes | Must reference an active account. |
 | Destination Type | Yes | Must reference a supported destination type. |
 | Destination Name | Yes | Must reference a valid destination based on Destination Type. |
-| Amount | Yes | Must be greater than zero. |
+| Amount | Yes | Must be greater than zero; Adjustment must be signed and non-zero. |
 | Payment Method | Yes | Must be selected from the Payment Method list. |
 
 A transaction cannot be considered valid if any required field is empty.
@@ -1589,6 +1592,7 @@ Reconciled transactions have been matched against account records.
 ### Rules
 
 - Behave like Completed.
+- Update Account Balances.
 - Marked as verified.
 - Used for reconciliation reporting.
 - Historical calculations remain unchanged.
