@@ -3,7 +3,7 @@
 **Document:** KNOWN_ISSUES  
 **Scope:** RC1 QA and later  
 **Status:** Living list of deferred defects  
-**Date:** 20 September 2026  
+**Date:** 24 September 2026  
 
 This file records known issues that are acknowledged and deferred. It does not change frozen architecture or production formulas.
 
@@ -55,3 +55,44 @@ Trust workbook links in Desktop. Do not use Excel Web PASS/FAIL as the RC1 gate.
 **Deferred until post-RC1.**
 
 No further Validation v8/v9 work for this issue during the RC1 checkpoint.
+
+---
+
+## PROD-001 — Excel Desktop Formula2 Save Issue
+
+| Field | Value |
+| --- | --- |
+| ID | **PROD-001** |
+| Component | Production workbook (`FinanceOS_v1.0.xlsx`), Helpers E2:K2 |
+| Platforms | Excel Desktop COM on this machine (unactivated / `Formula2` unavailable) |
+| Status | **Deferred — environment issue** |
+
+### Description
+
+Helpers E2:K2 dynamic-array formulas (`FILTER` / `SORT` / `UNIQUE`) are removed when the production workbook is saved through the current unactivated Excel Desktop COM environment.
+
+`Formula2` returns runtime error 1004. A COM `SaveCopyAs` in that session blanks E2:K2 and can stamp `fileRecoveryPr repairLoad="1"`.
+
+T002 named-range repair is complete. The remaining Desktop repair line (`Removed Records: Formula from /xl/worksheets/sheet10.xml`) is this environment stripping Helpers spills, not a Dashboard or named-range defect. `/xl/worksheets/sheet10.xml` is Helpers; Dashboard is `sheet13.xml`.
+
+### Root cause
+
+Local Excel Desktop is 16.0 build 14334 with an expired licence (`Product Activation Failed`). That COM session cannot persist dynamic-array formulas. This is not a FinanceOS logic defect.
+
+### Impact
+
+- Workbook logic is unchanged. Helpers E2:K2 FILTER/SORT/UNIQUE formulas remain in the frozen T002 production package.
+- Official repair is blocked on this machine. Do not rewrite those formulas as legacy expressions, and do not leave E2:K2 blank.
+- Desktop repair dialog / Excel Web “WORKBOOK REPAIRED” can reappear if this COM session saves the file again.
+
+### Workaround
+
+Do not save production through this Excel Desktop COM session.
+
+Repair requires saving once in a licensed Microsoft 365 / Excel 2021+ Desktop environment so Excel can store E2:K2 as native dynamic arrays.
+
+### Status
+
+**Deferred — environment issue.**
+
+T002 is frozen. No Helpers formula rewrite on this machine.
