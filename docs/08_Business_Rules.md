@@ -12,7 +12,7 @@
 
 **Applies To:** FinanceOS Excel Workbook Version 1
 
-**Last Updated:** 23 August 2026
+**Last Updated:** 25 September 2026
 
 ---
 
@@ -521,6 +521,8 @@ Business Engine calculates appreciation.
 
 Users never edit these fields.
 
+RC1 owns a **signed Appreciation Total only** (Business Engine `B36`). A negative total is net depreciation. A separate Depreciation Total output is **deferred**. Appreciation is **not** an Asset Health input.
+
 ---
 
 ## Asset Rule 5 — Asset Categories Drive Reporting
@@ -977,22 +979,21 @@ Business Engine calculates:
 
 # Analysis Engine Responsibilities (Assets & Liabilities)
 
-Analysis Engine interprets:
+Analysis Engine interprets. It never recalculates Business Engine totals.
 
-### Assets
+### Assets (RC1)
 
-* Investment Growth.
-* Asset Diversification.
-* Wealth Allocation.
+* Asset Health — diversification of non-cash-equivalent category totals only.
+* Cash Equivalent is excluded from Asset Health and is not Liquidity Health.
 
-### Liabilities
+### Liabilities (RC1)
 
-* Debt Health.
-* Payoff Progress.
-* Debt-to-Income Ratio.
+* Debt Health — EMI ratio interpretation only.
 
-### Commitments
+### Deferred
 
+* Investment growth / performance quality.
+* Payoff progress forecasting.
 * Commitment Burden.
 * Upcoming Payment Risk.
 * Subscription Growth.
@@ -1887,9 +1888,11 @@ Completed transactions are historical.
 
 ## Dashboard Rule 8 — Financial Health Card
 
-Financial Health Card displays one unified health score.
+RC1 Financial Health Card displays the eight official Analysis Engine dimension outputs.
 
-Supporting metrics remain visible underneath.
+A single unified Financial Health Score is **deferred**.
+
+Supporting dimension metrics remain visible. Dashboard never recalculates them.
 
 ---
 
@@ -1915,110 +1918,230 @@ Business Engine always calculates complete datasets.
 
 # Financial Health Score Rules
 
-Financial Health Score is a deterministic score from 0–100.
+A composite Financial Health Score (0–100 weighted across dimensions) is **deferred** for RC1.
 
-It summarizes overall financial condition.
-
----
-
-## Health Score Philosophy
-
-Health Score combines multiple financial dimensions.
+RC1 Analysis Engine owns **eight independent dimension outputs**. It does not compute a unified score.
 
 No AI.
 
-No subjective weighting after Version 1 freeze.
+No forecasting.
+
+No commitment burden.
+
+No Dashboard rules in this section.
 
 ---
 
-## Health Score Components
+## RC1 Official Health Dimensions (Frozen)
 
-| Component             | Weight |
-| --------------------- | ------ |
-| Savings Health        | 25%    |
-| Emergency Fund Health | 20%    |
-| Debt Health           | 20%    |
-| Cash Flow Health      | 15%    |
-| Goal Progress Health  | 10%    |
-| Asset Health          | 10%    |
+| Dimension | Time basis | Business Engine inputs |
+| --- | --- | --- |
+| Savings Health | Period (As-Of month) | `B30`; `B16` (zero-income guard) |
+| Expense Health | Period (As-Of month) | `B22`; `B16` |
+| Debt Health | Snapshot EMI vs period income | `B66`; `B16`; `B45`; `B42` |
+| Asset Health | Snapshot | `B70`, `B71`, `B72`, `B73`, `B75`; `B35`; `B74`; `B38` |
+| Goal Health | Snapshot | `B58`; `B56`; `B57` |
+| Liquidity Health | Snapshot cash vs period expenses | `B4`; `B22` |
+| Net Worth Health | Snapshot | `B48`; `B68`; `B4`, `B35`, `B42` (empty guard) |
+| Cash Flow Health | Period (As-Of month) | `B29`; `B16`; `B22` (Unavailable guard) |
 
-Weights total 100%.
+Emergency Fund Health is **not** an RC1 dimension.
 
-Weights are frozen.
+---
+
+## RC1 Severity and Score Mapping (Frozen)
+
+| Band | Score | Severity |
+| --- | --- | --- |
+| Unavailable | blank | blank |
+| Critical | 0 | Red |
+| Weak | 25 | Orange |
+| Moderate | 50 | Yellow |
+| Strong or Healthy | 75 | Green |
+| Excellent | 100 | Green |
+
+Interval rule: lower bound inclusive, upper bound exclusive, except each dimension’s top band, which includes its floor. `B30`, `B66`, and Surplus Ratio are ratios, not percentage points.
+
+Empty financial profile (used by Debt Health) is true only when all of these are zero: `B4`, `B16`, `B22`, `B35`, `B38`, `B42`, `B45`, `B56`, `B57`.
 
 ---
 
 ## Savings Health Rules
 
-Savings Health evaluates Savings Rate.
+Savings Health evaluates current-month cash-flow Savings Rate (`B30`).
 
-Suggested interpretation:
+| Condition | Band |
+| --- | --- |
+| `B16 = 0` | Unavailable |
+| `B30 < 0` | Critical |
+| `[0, 0.10)` | Weak |
+| `[0.10, 0.20)` | Moderate |
+| `[0.20, 0.30)` | Strong |
+| `≥ 0.30` | Excellent |
 
-| Savings Rate | Health    |
-| ------------ | --------- |
-| Above 30%    | Excellent |
-| 20–30%       | Strong    |
-| 10–20%       | Moderate  |
-| 0–10%        | Weak      |
-| Negative     | Critical  |
+Goal contributions remain expenses. Analysis does not recompute `B30`.
+
+---
+
+## Expense Health Rules
+
+Expense Health evaluates T005.2 current-month expenses versus income.
+
+| Condition | Band |
+| --- | --- |
+| `B16 = 0` and `B22 = 0` | Unavailable |
+| `B16 = 0` and `B22 > 0` | Critical |
+| `B22/B16 < 0.50` | Excellent |
+| `[0.50, 0.70)` | Strong |
+| `[0.70, 0.85)` | Moderate |
+| `[0.85, 1.00)` | Weak |
+| `≥ 1.00` | Critical |
 
 ---
 
 ## Emergency Fund Health Rules
 
-Evaluates months of essential expense coverage.
+Emergency Fund Health (Emergency Fund ÷ essential expenses) is **deferred**.
 
-Uses Emergency Fund rules defined in Part C.
+It is not an RC1 Analysis output.
+
+Liquidity Health is not Emergency Fund Coverage.
 
 ---
 
 ## Debt Health Rules
 
-Measures:
+Debt Health evaluates EMI Ratio (`B66`).
 
-* EMI Burden.
-* Debt-to-Income Ratio.
-* Outstanding Debt Trend.
+| Condition | Band |
+| --- | --- |
+| Empty financial profile | Unavailable |
+| Initialized profile and `B45 = 0` and `B42 = 0` | Excellent |
+| `B45 > 0` and `B16 = 0` | Critical |
+| `B66 < 0.15` | Excellent |
+| `[0.15, 0.25)` | Strong |
+| `[0.25, 0.35)` | Moderate |
+| `[0.35, 0.50)` | Weak |
+| `≥ 0.50` | Critical |
 
-Higher debt burden lowers score.
+A brand-new workbook is Unavailable. An initialized workbook with zero liabilities is Excellent.
+
+Do not use Analysis Engine estimated monthly interest. Do not use `B68` here (`B68` belongs to Net Worth Health). Outstanding-debt trend is deferred.
 
 ---
 
 ## Cash Flow Health Rules
 
-Measures:
+Cash Flow Health evaluates current-month surplus (`B29`) and Surplus Ratio `B29 / B16` when `B16 > 0`.
 
-* Positive Surplus.
-* Consistent Monthly Savings.
-* Fixed Commitment Burden.
+| Condition | Band |
+| --- | --- |
+| `B16 = 0` and `B22 = 0` | Unavailable |
+| `B29 < 0` | Critical |
+| `B29 = 0` and not Unavailable | Weak |
+| Surplus Ratio `(0, 0.10)` | Moderate |
+| Surplus Ratio `[0.10, 0.25)` | Strong |
+| Surplus Ratio `≥ 0.25` | Excellent |
 
-Negative surplus reduces score immediately.
+Weak owns exact zero surplus. Moderate starts after zero.
+
+No multi-month stability. No commitment burden. No forecasting.
+
+`B16 = 0` and `B22 > 0` is Critical.
 
 ---
 
 ## Goal Health Rules
 
-Measures:
+Goal Health evaluates aggregate Active + Completed progress (`B58`).
 
-* Contribution consistency.
-* Goal completion progress.
-* Number of delayed goals.
+| Condition | Band |
+| --- | --- |
+| `B56 + B57 = 0` | Unavailable |
+| `B58 ≥ 0.80` | Excellent |
+| `≥ 0.50` | Strong |
+| `≥ 0.25` | Moderate |
+| `> 0` | Weak |
+| `= 0` | Critical |
+
+Required monthly contribution, completion-month forecast, and overdue-goal counts are deferred.
 
 ---
 
 ## Asset Health Rules
 
-Measures diversification only.
+Asset Health measures **diversification only**.
 
-Version 1 does not evaluate investment performance quality.
+It does not evaluate appreciation, depreciation, or investment performance.
+
+Official Business Engine category totals remain `B70:B75`.
+
+Concentration uses Investment (`B70`), Physical Asset (`B71`), Property (`B72`), Retirement Asset (`B73`), and Other Asset (`B75`) only.
+
+**Cash Equivalent (`B74`) is excluded** from both the compared set and the denominator.
+
+Concentration = largest of those five ÷ (`B35 − B74`).
+
+| Condition | Band |
+| --- | --- |
+| `B38 = 0` or (`B35 − B74`) = 0 | Unavailable |
+| Concentration `≤ 0.40` | Excellent |
+| `≤ 0.60` | Strong |
+| `≤ 0.80` | Moderate |
+| `≤ 0.95` | Weak |
+| `> 0.95` | Critical |
+
+A Cash Equivalent–only portfolio is Unavailable for Asset Health. Liquidity Health measures cash.
+
+---
+
+## Liquidity Health Rules
+
+Liquidity Health is RC1 months of coverage using Business Engine `B4` (Total Active Account Balance) versus T005.2 expenses `B22`.
+
+Liquidity Months = `B4 / B22` when `B22 > 0`.
+
+This is **not** Emergency Fund Coverage.
+
+Liquid Assets (`B49`) remain **deferred**. Do not use `B6+B7`, `B8`, `B9`, `B49`, `B74`, or any asset category total.
+
+| Condition | Band |
+| --- | --- |
+| `B22 = 0` and `B4 = 0` | Unavailable |
+| `B22 = 0` and `B4 > 0` | Excellent |
+| Months `[0, 1)` | Critical |
+| `[1, 3)` | Weak |
+| `[3, 6)` | Moderate |
+| `[6, 12]` | Healthy |
+| `> 12` | Excellent |
+
+---
+
+## Net Worth Health Rules
+
+Net Worth Health interprets frozen Net Worth (`B48`) and Debt Ratio (`B68`).
+
+It does **not** change the Net Worth formula.
+
+| Condition | Band |
+| --- | --- |
+| `B4 = 0` and `B35 = 0` and `B42 = 0` | Unavailable |
+| `B48 < 0` | Critical |
+| `B48 = 0` | Weak |
+| `B48 > 0` and `B68 ≥ 0.70` | Weak |
+| `B68 ≥ 0.40` | Moderate |
+| `B68 ≥ 0.20` | Strong |
+| `B68 < 0.20` | Excellent |
 
 ---
 
 ## Health Score Update Frequency
 
-Score recalculates whenever workbook data changes.
+Dimension outputs recalculate whenever workbook data changes.
 
 No manual refresh.
+
+The composite Financial Health Score remains deferred and is not calculated in RC1.
 
 ---
 
@@ -3023,10 +3146,12 @@ The following behaviors are permanently frozen for FinanceOS Version 1.
 
 ### Intelligence Layer
 
-* Financial Health Score.
-* Cash Runway Prediction.
-* Purchase Affordability.
-* Goal Forecasting.
+* RC1 eight health dimensions (Savings, Expense, Debt, Asset, Goal, Liquidity, Net Worth, Cash Flow).
+* Financial Health Score — **deferred**.
+* Emergency Fund Health — **deferred**.
+* Cash Runway Prediction — **deferred**.
+* Purchase Affordability — **deferred**.
+* Goal Forecasting — **deferred**.
 * Spending Intelligence.
 * Financial Momentum.
 * AI-style deterministic insights.
@@ -3055,6 +3180,12 @@ The following behaviors are permanently frozen for FinanceOS Version 1.
 The complete financial behavior of FinanceOS Version 1 has been frozen.
 
 This document defines the permanent business logic for every calculation, validation, dashboard metric, forecast, simulation, and deterministic insight implemented by Cursor.
+
+## RC1 T009.2 — Analysis Engine Documentation Freeze
+
+RC1 official Analysis outputs are the eight health dimensions frozen in T009.1 and T009.1.1.
+
+Composite Health Score, Emergency Fund Health, Liquid Assets, Depreciation Total, Asset Sale Engine, Per-Asset Matrix, and Forecast / Runway / Purchase Simulation remain deferred.
 
 ---
 

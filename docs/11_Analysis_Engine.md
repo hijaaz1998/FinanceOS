@@ -10,7 +10,7 @@
 
 **Repository:** FinanceOS
 
-**Last Updated:** 23 August 2026
+**Last Updated:** 25 September 2026
 
 ---
 
@@ -21,6 +21,86 @@ The Analysis Engine is the deterministic intelligence layer of FinanceOS Version
 It reads reusable outputs from the Business Engine and transforms them into financial decision-support metrics that help users understand their financial situation.
 
 The Analysis Engine **never changes financial data**. It only interprets deterministic calculations.
+
+---
+
+# RC1 Official Analysis Outputs (Frozen)
+
+T009.1 and T009.1.1 freeze exactly eight RC1 health dimensions. Analysis reads Business Engine cells only. It does not modify Business Engine, entities, Helpers, Dashboard, or Insights.
+
+| Dimension | Time basis | Business Engine inputs | Unavailable |
+| --- | --- | --- | --- |
+| Savings Health | Period | `B30`, `B16` | `B16 = 0` |
+| Expense Health | Period | `B22`, `B16` | `B16 = 0` and `B22 = 0` |
+| Debt Health | Snapshot vs period income | `B66`, `B16`, `B45`, `B42` | Empty financial profile |
+| Asset Health | Snapshot | `B70`–`B73`, `B75`, `B35`, `B74`, `B38` | `B38 = 0` or (`B35 − B74`) = 0 |
+| Goal Health | Snapshot | `B58`, `B56`, `B57` | `B56 + B57 = 0` |
+| Liquidity Health | Snapshot vs period expenses | `B4`, `B22` | `B4 = 0` and `B22 = 0` |
+| Net Worth Health | Snapshot | `B48`, `B68`, `B4`, `B35`, `B42` | `B4 = B35 = B42 = 0` |
+| Cash Flow Health | Period | `B29`, `B16`, `B22` | `B16 = 0` and `B22 = 0` |
+
+### Shared band, score, and severity mapping
+
+| Band | Score | Severity |
+| --- | --- | --- |
+| Unavailable | blank | blank |
+| Critical | 0 | Red |
+| Weak | 25 | Orange |
+| Moderate | 50 | Yellow |
+| Strong or Healthy | 75 | Green |
+| Excellent | 100 | Green |
+
+Interval rule: lower bound inclusive, upper bound exclusive, except each dimension’s top band.
+
+Empty financial profile: `B4`, `B16`, `B22`, `B35`, `B38`, `B42`, `B45`, `B56`, and `B57` are all zero.
+
+### Savings Health bands
+
+`B16 = 0` Unavailable; `B30 < 0` Critical; `[0, 0.10)` Weak; `[0.10, 0.20)` Moderate; `[0.20, 0.30)` Strong; `≥ 0.30` Excellent.
+
+### Expense Health bands
+
+`B16 = 0` and `B22 = 0` Unavailable; `B16 = 0` and `B22 > 0` Critical; else `B22/B16`: `< 0.50` Excellent; `[0.50, 0.70)` Strong; `[0.70, 0.85)` Moderate; `[0.85, 1.00)` Weak; `≥ 1.00` Critical.
+
+### Debt Health bands
+
+Empty profile → Unavailable. Initialized profile and `B45 = 0` and `B42 = 0` → Excellent. `B45 > 0` and `B16 = 0` → Critical. Else `B66`: `< 0.15` Excellent; `[0.15, 0.25)` Strong; `[0.25, 0.35)` Moderate; `[0.35, 0.50)` Weak; `≥ 0.50` Critical.
+
+### Asset Health bands
+
+Diversification only. Cash Equivalent (`B74`) excluded. Appreciation is not an input. Concentration = largest of `{B70,B71,B72,B73,B75}` ÷ (`B35 − B74`).
+
+`B38 = 0` or (`B35 − B74`) = 0 → Unavailable; `≤ 0.40` Excellent; `≤ 0.60` Strong; `≤ 0.80` Moderate; `≤ 0.95` Weak; `> 0.95` Critical.
+
+### Goal Health bands
+
+`B56 + B57 = 0` Unavailable; `B58 ≥ 0.80` Excellent; `≥ 0.50` Strong; `≥ 0.25` Moderate; `> 0` Weak; `= 0` Critical.
+
+### Liquidity Health bands
+
+Liquidity Months = `B4 / B22` when `B22 > 0`. Uses Total Active Account Balance. **Not** Emergency Fund Coverage. Do not use `B6+B7`, `B8`, `B9`, `B49`, or asset category totals. Liquid Assets remain deferred.
+
+`B22 = 0` and `B4 = 0` Unavailable; `B22 = 0` and `B4 > 0` Excellent; `[0, 1)` Critical; `[1, 3)` Weak; `[3, 6)` Moderate; `[6, 12]` Healthy; `> 12` Excellent.
+
+### Net Worth Health bands
+
+Does not modify `B48`. `B4 = B35 = B42 = 0` Unavailable; `B48 < 0` Critical; `B48 = 0` Weak; `B48 > 0` and `B68 ≥ 0.70` Weak; `≥ 0.40` Moderate; `≥ 0.20` Strong; `< 0.20` Excellent.
+
+### Cash Flow Health bands
+
+Surplus Ratio = `B29 / B16` when `B16 > 0`. No commitment burden. No forecasting.
+
+`B16 = 0` and `B22 = 0` Unavailable; `B29 < 0` Critical; `B29 = 0` Weak; Surplus Ratio `(0, 0.10)` Moderate; `[0.10, 0.25)` Strong; `≥ 0.25` Excellent.
+
+### RC1 deferred Analysis modules
+
+* Composite Financial Health Score.
+* Emergency Fund Health.
+* Liquid Assets metric.
+* Depreciation Total (Business Engine).
+* Asset Sale Engine.
+* Per-Asset Matrix.
+* Cash Runway / Forecast / Purchase Simulation / Scenario Analysis.
 
 ---
 
@@ -37,9 +117,9 @@ Examples:
 
 | Business Engine Output | Analysis Engine Interpretation |
 |------------------------|--------------------------------|
-| Savings Rate = 18% | "Your savings rate is improving." |
-| Emergency Coverage = 2.4 months | "Your emergency fund covers approximately 2 months of expenses." |
-| EMI Burden = 34% | "Debt obligations consume one-third of monthly income." |
+| Savings Rate = 18% | Savings Health = Moderate |
+| EMI Ratio = 34% | Debt Health = Moderate |
+| `B4 / B22` = 2.4 months | Liquidity Health = Weak (not Emergency Fund Coverage) |
 
 This separation is immutable.
 
@@ -51,10 +131,10 @@ The Analysis Engine reads outputs from upstream worksheets only.
 
 | Worksheet | Purpose |
 |-----------|---------|
-| Business Engine | Primary financial metrics. |
-| Settings | Financial year and configuration. |
-| Goals | Goal metadata. |
-| Categories | Category metadata. |
+| Business Engine | Primary financial metrics. RC1 health formulas read Business Engine cells only. |
+| Settings | Financial year and configuration. Not an RC1 health input. |
+| Goals | Goal metadata. RC1 Goal Health reads Goal Summary cells on Business Engine. |
+| Categories | Category metadata. Not an RC1 health input. |
 
 The Analysis Engine never reads Dashboard or Insights.
 
@@ -64,16 +144,16 @@ The Analysis Engine never reads Dashboard or Insights.
 
 The Analysis Engine produces reusable interpretation metrics.
 
-| Module | Purpose |
-|--------|---------|
-| Financial Health Engine | Overall financial health inputs. |
-| Cash Runway Engine | Income stop survival calculations. |
-| Spending Analysis Engine | Spending patterns and trends. |
-| Income Analysis Engine | Income consistency and growth. |
-| Goal Forecast Engine | Goal completion forecasting. |
-| Debt Analysis Engine | Liability burden analysis. |
-| Purchase Affordability Engine | Safe purchase calculations. |
-| Scenario Analysis Engine | Deterministic future simulations. |
+| Module | RC1 status |
+|--------|------------|
+| Financial Health Engine | Official — eight dimensions |
+| Cash Runway Engine | **Deferred** |
+| Spending Analysis Engine | Existing leftover only; not T009 product |
+| Income Analysis Engine | Existing leftover only; not T009 product |
+| Goal Forecast Engine | **Deferred** |
+| Debt Analysis Engine | Official as Debt Health only |
+| Purchase Affordability Engine | **Deferred** |
+| Scenario Analysis Engine | **Deferred** |
 
 Outputs from these modules are consumed by Dashboard and Insights.
 
@@ -87,28 +167,34 @@ It does **not** generate the final narrative explanation.
 
 ## Health Inputs Consumed
 
-- Savings Rate
-- Emergency Coverage
-- Debt Burden
-- Cash Flow Stability
-- Goal Progress
-- Asset Allocation
+RC1 consumes the Business Engine cells listed in **RC1 Official Analysis Outputs**.
+
+Emergency Coverage and cash-flow stability history are **deferred**.
 
 ## Health Outputs
 
-| Output | Purpose |
-|--------|---------|
-| Savings Health | Savings quality indicator. |
-| Emergency Fund Health | Emergency preparedness indicator. |
-| Debt Health | Debt pressure indicator. |
-| Cash Flow Health | Cash flow consistency indicator. |
-| Goal Health | Goal progress indicator. |
+| Output | RC1 status |
+|--------|------------|
+| Savings Health | Official |
+| Expense Health | Official |
+| Debt Health | Official |
+| Asset Health | Official |
+| Goal Health | Official |
+| Liquidity Health | Official — not Emergency Fund Coverage |
+| Net Worth Health | Official |
+| Cash Flow Health | Official |
+| Emergency Fund Health | **Deferred** |
+| Overall Financial Health Score | **Deferred** |
 
-These outputs become inputs for the final Financial Health Score in Part B.
+These outputs do **not** roll up into a composite score in RC1.
 
 ---
 
 # Cash Runway Engine (Frozen)
+
+The Cash Runway Engine is **deferred for RC1**. T009 does not implement runway, income-stop survival, or Emergency Fund Coverage.
+
+The remainder of this section is Version 1 architecture only.
 
 The Cash Runway Engine measures how long the user can survive if income stops.
 
@@ -183,6 +269,8 @@ Version 1 focuses on deterministic historical analysis only.
 ---
 
 # Goal Forecast Engine (Frozen)
+
+The Goal Forecast Engine is **deferred for RC1**. T009 Goal Health uses `B58` only.
 
 The Goal Forecast Engine predicts goal completion using current contribution behaviour.
 
@@ -295,11 +383,13 @@ Part B freezes the Financial Health Score architecture, Purchase Affordability E
 
 # Financial Health Score Architecture (Frozen)
 
-The Financial Health Score is the primary summary metric generated by the Analysis Engine.
+The composite Financial Health Score is **deferred for RC1**.
 
-It combines multiple Business Engine outputs into a single deterministic health indicator.
+RC1 ships the eight independent dimension outputs documented above.
 
-The score is **explainable** and **rule-based**.
+A later version may combine dimensions into one 0–100 score. RC1 does not.
+
+The score, when implemented later, remains **explainable** and **rule-based**.
 
 Version 1 does not use machine learning or generative AI.
 
@@ -317,14 +407,17 @@ The score is calculated from multiple independent dimensions instead of a single
 
 ## Health Score Dimensions
 
-| Dimension | Business Engine Input |
-|-----------|-----------------------|
-| Savings Health | Savings Rate |
-| Emergency Fund Health | Emergency Coverage Months |
-| Debt Health | Debt Burden |
-| Cash Flow Health | Monthly Surplus Stability |
-| Goal Health | Goal Completion Progress |
-| Asset Health | Asset Allocation |
+| Dimension | RC1 Business Engine Input | RC1 status |
+|-----------|---------------------------|------------|
+| Savings Health | `B30` | Official |
+| Expense Health | `B22` / `B16` | Official |
+| Debt Health | `B66` | Official |
+| Asset Health | Non-cash-equivalent category totals | Official |
+| Goal Health | `B58` | Official |
+| Liquidity Health | `B4` / `B22` | Official |
+| Net Worth Health | `B48`, `B68` | Official |
+| Cash Flow Health | `B29` / `B16` | Official |
+| Emergency Fund Health | Emergency Coverage Months | **Deferred** |
 
 Each dimension contributes independently.
 
@@ -332,14 +425,18 @@ Each dimension contributes independently.
 
 ## Health Score Outputs
 
-| Output | Purpose |
-|--------|---------|
-| Overall Financial Health Score | Dashboard KPI |
-| Savings Health Indicator | Dashboard Card |
-| Emergency Health Indicator | Dashboard Card |
-| Debt Health Indicator | Dashboard Card |
-| Cash Flow Health Indicator | Dashboard Card |
-| Goal Health Indicator | Dashboard Card |
+| Output | RC1 status |
+|--------|------------|
+| Overall Financial Health Score | **Deferred** |
+| Savings Health Indicator | Official |
+| Expense Health Indicator | Official |
+| Debt Health Indicator | Official |
+| Asset Health Indicator | Official |
+| Goal Health Indicator | Official |
+| Liquidity Health Indicator | Official |
+| Net Worth Health Indicator | Official |
+| Cash Flow Health Indicator | Official |
+| Emergency Health Indicator | **Deferred** |
 
 The Dashboard consumes scores.
 
@@ -348,6 +445,8 @@ Insights explain why scores changed.
 ---
 
 # Purchase Affordability Engine (Frozen)
+
+The Purchase Affordability Engine is **deferred for RC1**. T009 does not implement Safe / Caution / Not Recommended.
 
 The Purchase Affordability Engine evaluates whether a planned purchase is financially safe.
 
@@ -417,6 +516,8 @@ Rules are deterministic.
 
 # Future Prediction Engine (Frozen)
 
+The Future Prediction Engine is **deferred for RC1**. T009 implements no forecasting.
+
 The Future Prediction Engine projects future financial outcomes using Business Engine calculations.
 
 It is **deterministic forecasting**, not AI prediction.
@@ -460,6 +561,8 @@ Scenario Analysis creates alternative projections.
 ---
 
 # Scenario Analysis Engine (Frozen)
+
+Scenario Analysis is **deferred for RC1**.
 
 Scenario Analysis compares hypothetical financial situations.
 
@@ -583,15 +686,23 @@ Insights explains severity.
 
 Dashboard consumes Analysis Engine outputs.
 
-Examples include:
+RC1 examples include:
 
-- Financial Health Card.
 - Savings Health Card.
+- Expense Health Card.
+- Debt Health Card.
+- Asset Health Card.
+- Goal Health Card.
+- Liquidity Health Card.
+- Net Worth Health Card.
+- Cash Flow Health Card.
+
+Deferred for RC1:
+
+- Unified Financial Health Score Card.
 - Cash Runway Card.
 - Purchase Simulator Card.
-- Spending Trend Card.
 - Goal Forecast Card.
-- Debt Health Card.
 
 Dashboard never recalculates analysis metrics.
 
@@ -662,16 +773,12 @@ The following Analysis Engine decisions are frozen.
 
 ### Purchase Intelligence
 
-- Safe / Caution / Not Recommended is deterministic.
-- Emergency reserve is always considered.
-- Goal delay is considered.
-- Commitment burden is considered.
+- Deferred for RC1.
+- Safe / Caution / Not Recommended remains Version 1 architecture only.
 
 ### Future Predictions
 
-- Cash Runway is deterministic.
-- Goal forecasts are deterministic.
-- Scenario analysis is deterministic.
+- Deferred for RC1 (Cash Runway, Goal Forecast, Scenario).
 - No external AI models participate.
 
 ### Architecture
@@ -689,6 +796,14 @@ The following Analysis Engine decisions are frozen.
 The complete Analysis Engine architecture for FinanceOS Version 1 has been frozen.
 
 This document defines financial health architecture, purchase affordability, future prediction modules, deterministic AI-style insight inputs, severity levels, dependency rules, and implementation boundaries.
+
+## RC1 T009.2 — Analysis Engine Documentation Freeze
+
+RC1 official outputs are the eight health dimensions frozen in T009.1 and T009.1.1.
+
+Composite Health Score, Emergency Fund Health, Liquid Assets, Cash Runway, Goal Forecast, Purchase Simulation, Scenario Analysis, Asset Sale Engine, and Per-Asset Matrix remain deferred.
+
+T009 implementation has not started.
 
 ---
 

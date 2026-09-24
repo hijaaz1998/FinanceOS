@@ -10,7 +10,7 @@
 
 **Repository:** FinanceOS
 
-**Last Updated:** 23 August 2026
+**Last Updated:** 25 September 2026
 
 ---
 
@@ -230,18 +230,26 @@ Analysis Engine calculations use the `analysis` prefix.
 
 ### Examples
 
-| Output | Purpose |
-|--------|---------|
-| analysisHealthScore | Overall health score |
-| analysisSavingsHealth | Savings indicator |
-| analysisCashRunway | Cash runway months |
-| analysisGoalForecast | Goal forecast month |
-| analysisDebtHealth | Debt indicator |
-| analysisPurchaseStatus | Purchase affordability |
-| analysisIncomeGrowth | Income trend |
-| analysisExpenseTrend | Spending trend |
+| Output | Purpose | RC1 status |
+|--------|---------|------------|
+| analysisSavingsHealth | Savings Health band | Official |
+| analysisExpenseHealth | Expense Health band | Official |
+| analysisDebtHealth | Debt Health band | Official |
+| analysisAssetHealth | Asset Health band | Official |
+| analysisGoalHealth | Goal Health band | Official |
+| analysisLiquidityHealth | Liquidity Health band | Official |
+| analysisNetWorthHealth | Net Worth Health band | Official |
+| analysisCashFlowHealth | Cash Flow Health band | Official |
+| analysisHealthScore | Overall health score | **Deferred** |
+| analysisCashRunway | Cash runway months | **Deferred** |
+| analysisGoalForecast | Goal forecast month | **Deferred** |
+| analysisPurchaseStatus | Purchase affordability | **Deferred** |
+| analysisIncomeGrowth | Income trend | Not T009 product |
+| analysisExpenseTrend | Spending trend | Not T009 product |
 
-Analysis outputs are interpretation metrics only.
+Analysis outputs are interpretation metrics only. Score and severity cells use the same prefix with a suffix if named (`analysisSavingsHealthScore`, `analysisSavingsHealthSeverity`).
+
+`analysis*` names, when created in T009, point at Analysis Engine cells. They are not Helpers validation names.
 
 ---
 
@@ -497,6 +505,10 @@ The following naming conventions are permanently frozen.
 The complete naming convention system for FinanceOS Version 1 has been frozen.
 
 This document defines workbook naming, repository naming, formula naming, API naming, database naming, Git naming, and migration naming standards.
+
+## RC1 T009.2 — Analysis Engine Documentation Freeze
+
+Official RC1 `analysis*` names are the eight health-dimension bands. `analysisHealthScore`, `analysisCashRunway`, `analysisGoalForecast`, and `analysisPurchaseStatus` remain deferred.
 
 ---
 

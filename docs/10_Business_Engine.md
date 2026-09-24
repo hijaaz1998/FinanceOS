@@ -10,7 +10,7 @@
 
 **Repository:** FinanceOS
 
-**Last Updated:** 23 August 2026
+**Last Updated:** 25 September 2026
 
 ---
 
@@ -876,6 +876,8 @@ The internal Account Engine matrix is stored in the unused `D1:L200` area of the
 
 Available Cash equals total balances across active cash accounts.
 
+RC1 Liquidity Health consumes Business Engine `B4` (Total Active Account Balance), not a rebuilt cash-class sum and not Liquid Assets (`B49`). A dedicated Available Cash output separate from `B4` is not required for T009.
+
 ---
 
 ## Included Accounts
@@ -1365,17 +1367,18 @@ Groups asset value by category.
 
 ## Categories
 
-* Cash Equivalent
-* Gold
-* Mutual Funds
-* Stocks
-* Property
-* Retirement
-* Vehicle
-* Electronics
-* Other Assets
+RC1 official Asset Category totals are Business Engine `B70:B75`:
 
-Outputs consumed by Dashboard.
+* Investment (`B70`)
+* Physical Asset (`B71`)
+* Property (`B72`)
+* Retirement Asset (`B73`)
+* Cash Equivalent (`B74`)
+* Other Asset (`B75`)
+
+Type-level Gold / Mutual Fund / Stock outputs are **not** RC1 official engine outputs.
+
+Outputs consumed by Dashboard and by Analysis Engine Asset Health (Cash Equivalent excluded from diversification).
 
 ---
 
@@ -1397,12 +1400,13 @@ Grouped by Asset ID.
 
 | Output                       | Purpose       |
 | ---------------------------- | ------------- |
-| Total Assets                 | Dashboard KPI |
+| Total Asset Value (`B35`)    | Dashboard KPI |
+| Active Asset Count (`B38`)   | Dashboard KPI |
 | Investment Category Value    | Dashboard KPI |
-| Appreciation Total           | Dashboard KPI |
-| Depreciation Total           | Dashboard KPI |
-| Asset Allocation by Category | Dashboard     |
-| Asset Allocation by Type     | Dashboard     |
+| Signed Appreciation Total (`B36`) | Dashboard KPI |
+| Depreciation Total           | **Deferred** — negative `B36` is net depreciation |
+| Asset Allocation by Category (`B70:B75`) | Dashboard and Analysis |
+| Asset Allocation by Type     | **Deferred** for RC1 official outputs |
 
 ---
 
@@ -1584,12 +1588,13 @@ Reads:
 
 | Output                   | Purpose        |
 | ------------------------ | -------------- |
-| Total Cash               | Dashboard KPI  |
-| Total Assets             | Dashboard KPI  |
-| Total Liabilities        | Dashboard KPI  |
-| Net Worth                | Dashboard KPI  |
-| Monthly Net Worth Change | Analysis Input |
-| Annual Net Worth Change  | Analysis Input |
+| Total Active Account Balance (`B4`) | Dashboard KPI and Liquidity Health |
+| Total Asset Value (`B35`) | Dashboard KPI  |
+| Total Liabilities (`B42`) | Dashboard KPI  |
+| Net Worth (`B48`)        | Dashboard KPI and Net Worth Health |
+| Liquid Net Worth (`B49`) | **Deferred** — unused placeholder |
+| Monthly Net Worth Change | **Deferred** for RC1 Analysis |
+| Annual Net Worth Change  | **Deferred** for RC1 Analysis |
 
 ---
 
@@ -2080,14 +2085,29 @@ Analysis Engine provides interpretation.
 
 # Health Input Output Metrics
 
-| Output                      | Purpose                |
-| --------------------------- | ---------------------- |
-| Savings Rate Input          | Health Score component |
-| Emergency Coverage Input    | Health Score component |
-| Debt Burden Input           | Health Score component |
-| Cash Flow Stability Input   | Health Score component |
-| Goal Progress Input         | Health Score component |
-| Asset Allocation Input      | Health Score component |
+RC1 Analysis Engine consumes existing Business Engine cells. It does not require a new Health Input Engine block on Business Engine.
+
+| RC1 Analysis dimension | Business Engine cells |
+| ---------------------- | --------------------- |
+| Savings Health | `B30`, `B16` |
+| Expense Health | `B22`, `B16` |
+| Debt Health | `B66`, `B16`, `B45`, `B42` |
+| Asset Health | `B70`, `B71`, `B72`, `B73`, `B75`, `B35`, `B74`, `B38` |
+| Goal Health | `B58`, `B56`, `B57` |
+| Liquidity Health | `B4` (Total Active Account Balance), `B22` |
+| Net Worth Health | `B48`, `B68`, `B4`, `B35`, `B42` |
+| Cash Flow Health | `B29`, `B16`, `B22` |
+
+| Output | RC1 status |
+| ------ | ---------- |
+| Savings Rate (`B30`) | Official RC1 input |
+| EMI Ratio (`B66`) | Official RC1 input |
+| Goal Completion % (`B58`) | Official RC1 input |
+| Category totals (`B70:B75`) | Official RC1 outputs |
+| Emergency Coverage Input | **Deferred** |
+| Cash Flow Stability Input | **Deferred** |
+| Liquid Assets / Liquid Net Worth (`B49`) | **Deferred** — placeholder remains unused |
+| Composite Health Score inputs | **Deferred** |
 
 ---
 
@@ -2116,6 +2136,8 @@ Measures emergency reserve coverage in months.
 Emergency Cash ÷ Monthly Essential Expenses.
 
 Essential expense definitions come from DOC-008.
+
+This input is **deferred** for RC1. Analysis Liquidity Health uses `B4 / B22` and is not Emergency Fund Coverage.
 
 ---
 
@@ -2210,13 +2232,16 @@ Business Engine owns:
 
 ### Health Inputs
 
-* Savings Rate Input.
-* Debt Burden Input.
-* Emergency Coverage Input.
-* Goal Progress Input.
-* Asset Allocation Input.
+* Savings Rate (`B30`).
+* EMI Ratio (`B66`).
+* Goal Completion % (`B58`).
+* Net Worth (`B48`) and Debt Ratio (`B68`).
+* Total Active Account Balance (`B4`).
+* Asset category totals (`B70:B75`).
+* Emergency Coverage Input — **deferred**.
+* Liquid Assets — **deferred**.
 
-These outputs become the foundation for the Analysis Engine.
+These existing cells are the foundation for the RC1 Analysis Engine.
 
 ---
 
@@ -2816,6 +2841,14 @@ The following Business Engine architecture decisions are permanently frozen.
 The complete deterministic Business Engine architecture for FinanceOS Version 1 has been frozen.
 
 This document defines every calculation owner, dependency rule, reusable financial output, forecast input, health input, protection rule, and migration mapping for the workbook.
+
+## RC1 T009.2 — Analysis Engine Documentation Freeze
+
+RC1 Analysis consumes the Business Engine cells listed in the Health Input Output Metrics table.
+
+Signed Appreciation Total (`B36`) is official. Depreciation Total, Liquid Assets, Emergency Coverage Input, Asset Sale Engine, and Per-Asset Matrix remain deferred.
+
+T009 does not modify Business Engine formulas.
 
 ---
 
