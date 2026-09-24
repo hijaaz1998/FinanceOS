@@ -154,6 +154,7 @@ These are intentional architectural improvements that are **not** production bug
 | --- | --- | --- | --- |
 | TD-001 | Transaction Goal Identifier Migration (Destination Name → Goal ID storage) | Deferred | V1.1 |
 | TD-002 | Last Transaction Date (Business Engine Account Engine I2:I200) | Deferred | Post-RC1 |
+| TD-004 | Transaction Asset Identifier Migration (Destination Name → Asset ID storage) | Deferred | V1.1 |
 
 PROD-001 is not technical debt. It remains under Deferred Issues.
 
